@@ -15,6 +15,7 @@ Install dependencies:
 
 ```sh
 git clone https://github.com/sunjl/caoyuan-ocr.git
+cd caoyuan-ocr
 sudo pip3 install -r requirements.txt
 ```
 
@@ -25,6 +26,12 @@ cd keras
 python3 ocr.py train
 python3 ocr.py gen_test_data
 python3 ocr.py evaluate
+```
+
+Start server:
+```sh
+cd web
+FLASK_APP=app.py flask run
 ```
 
 Todo:

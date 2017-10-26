@@ -1,13 +1,16 @@
+import sys
+
+import os
+
+sys.path.append(os.path.realpath('..'))
+
 import argparse
 import shutil
-import string
 
 import cv2
 import numpy as np
-import os
 import pandas as pd
 import tensorflow as tf
-from PIL import Image, ImageFont, ImageDraw
 from keras.callbacks import EarlyStopping
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Dense, Activation, Flatten
@@ -16,20 +19,8 @@ from keras.models import Model
 from keras.optimizers import Adadelta
 from keras.utils import plot_model
 
-digits = string.digits
-letters = string.ascii_letters
-dict_chars = digits + letters
-dict_classes = int(len(dict_chars))
-
-font_dir = '../font'
-max_num_of_chars = 5
-min_num_of_chars = 1
-image_width = 192
-image_height = 48
-background_color = (0, 0, 0)
-text_color = "#ffffff"
-max_font_size = 48
-min_font_size = 24
+from conf.image import *
+from util import image_util
 
 num_epoch = 500
 input_shape = (image_height, image_width, 3)
@@ -42,62 +33,13 @@ test_data_dir = '../data/test'
 test_data_size = 10
 
 
-def get_font_fullpaths(category):
-    path = None
-    if category == 'chs':
-        path = os.path.join(font_dir, 'chs')
-    elif category == 'en':
-        path = os.path.join(font_dir, 'en')
-    fullpaths = []
-    for filename in os.listdir(path):
-        fullpath = os.path.join(path, filename)
-        if os.path.isfile(fullpath):
-            fullpaths.append(fullpath)
-    return fullpaths
-
-
-def gen_image():
-    num_of_chars = np.random.randint(min_num_of_chars, max_num_of_chars + 1)
-    chars = []
-    for idx in range(0, num_of_chars):
-        if np.random.uniform() > 0.5:
-            digit_idx = np.random.randint(len(digits))
-            chars.append(digits[digit_idx])
-        else:
-            letter_idx = np.random.randint(len(letters))
-            chars.append(letters[letter_idx])
-
-    image = Image.new("RGB", (image_width, image_height), background_color)
-    draw = ImageDraw.Draw(image)
-
-    font_fullpaths = get_font_fullpaths(category='en')
-    fullpath_idx = np.random.randint(len(font_fullpaths))
-    font_fullpath = font_fullpaths[fullpath_idx]
-    font_size = np.random.randint(min_font_size, max_font_size)
-
-    for idx in range(0, len(chars)):
-        char = chars[idx]
-        font = ImageFont.truetype(font_fullpath, font_size)
-        font_width, font_height = font.getsize(char)
-        width_offset = idx * font_width
-        height_offset_limit = (image_height - font_height) // 2
-        if height_offset_limit > 0:
-            height_offset = np.random.randint(height_offset_limit)
-        else:
-            height_offset = 0
-        offset = (width_offset, height_offset)
-        draw.text(offset, char, font=font, fill=text_color)
-
-    return np.array(image), chars
-
-
 def batch_generator(size):
     while True:
         image_list = []
         head1_list = []
         head2_list = []
         for i in range(size):
-            image, chars = gen_image()
+            image, chars = image_util.gen_image()
             chars_length = len(chars)
 
             head1 = np.zeros((max_num_of_chars * dict_classes), np.int32)
@@ -203,7 +145,7 @@ def gen_test_data(size=test_data_size):
     os.makedirs(test_data_dir)
 
     for i in range(0, size):
-        img, chars = gen_image()
+        img, chars = image_util.gen_image()
         name = ''.join(char for char in chars)
         cv2.imwrite(os.path.join(test_data_dir, name + '.png'), img)
 

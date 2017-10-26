@@ -1,0 +1,6 @@
+data/
+model/
+python-env/
+.idea/
+*.py[cod]
+*.iml

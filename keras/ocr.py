@@ -19,18 +19,22 @@ from keras.models import Model
 from keras.optimizers import Adadelta
 from keras.utils import plot_model
 
-from conf.image import *
-from util import image_util
+from conf.image_conf import min_num_of_chars
+from conf.image_conf import max_num_of_chars
+from conf.image_conf import dict_classes
+from conf.image_conf import dict_chars
 
-num_epoch = 500
-input_shape = (image_height, image_width, 3)
-batch_size = 32
-patience = 10
-model_dir = '../model'
-model_h5_name = 'output.h5'
-model_plot_name = 'output.png'
-test_data_dir = '../data/test'
-test_data_size = 10
+from conf.keras_conf import batch_size
+from conf.keras_conf import input_shape
+from conf.keras_conf import output_dir
+from conf.keras_conf import model_plot_name
+from conf.keras_conf import num_epoch
+from conf.keras_conf import patience
+from conf.keras_conf import model_h5_name
+from conf.keras_conf import test_data_size
+from conf.keras_conf import test_data_dir
+
+from util import image_util
 
 
 def batch_generator(size):
@@ -39,7 +43,7 @@ def batch_generator(size):
         head1_list = []
         head2_list = []
         for i in range(size):
-            image, chars = image_util.gen_image()
+            chars, image = image_util.gen_image()
             chars_length = len(chars)
 
             head1 = np.zeros((max_num_of_chars * dict_classes), np.int32)
@@ -107,11 +111,11 @@ def get_model():
     model = Model(inputs=input_data, outputs=[head1, head2])
     model.compile(optimizer=Adadelta(), loss={'head1': custom_loss, 'head2': custom_cross_entropy})
 
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     print(model.summary())
-    plot_model(model, to_file=os.path.join(model_dir, model_plot_name), show_shapes=True)
+    plot_model(model, to_file=os.path.join(output_dir, model_plot_name), show_shapes=True)
 
     return model
 
@@ -132,11 +136,11 @@ def train(epochs=num_epoch):
         validation_data=batch_generator(batch_size),
         validation_steps=batch_size)
 
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
-    model.save_weights(os.path.join(model_dir, model_h5_name))
-    pd.DataFrame(history.history).to_csv(os.path.join(model_dir, 'train_history.csv'), index=False)
+    model.save_weights(os.path.join(output_dir, model_h5_name))
+    pd.DataFrame(history.history).to_csv(os.path.join(output_dir, 'train_history.csv'), index=False)
 
 
 def gen_test_data(size=test_data_size):
@@ -145,39 +149,31 @@ def gen_test_data(size=test_data_size):
     os.makedirs(test_data_dir)
 
     for i in range(0, size):
-        img, chars = image_util.gen_image()
+        chars, img = image_util.gen_image()
         name = ''.join(char for char in chars)
         cv2.imwrite(os.path.join(test_data_dir, name + '.png'), img)
 
 
 def decode_prediction(y_pred):
-    char_str = []
-
+    chars = []
     y_pred_head1 = y_pred[0]
     y_pred_head2 = y_pred[1]
-
     pred_num = np.argmax(y_pred_head2) + min_num_of_chars
-    print("predicted number of chars:", pred_num)
-
     for i in range(0, pred_num):
         idx = np.argmax(y_pred_head1[:, i * dict_classes:(i + 1) * dict_classes])
-        char_str.append(dict_chars[idx])
-
-    print('prediction:', char_str)
+        chars.append(dict_chars[idx])
+    print('prediction:', ''.join(chars))
 
 
 def evaluate():
     model = get_model()
-    model.load_weights(os.path.join(model_dir, model_h5_name))
+    model.load_weights(os.path.join(output_dir, model_h5_name))
 
     for filename in sorted(os.listdir(test_data_dir)):
         image_path = os.path.join(test_data_dir, filename)
-        print('image path:', image_path)
-
+        print('image path:', filename)
         img = cv2.imread(image_path)
-
         y_pred = model.predict(img[None, ...])
-
         decode_prediction(y_pred)
 
 

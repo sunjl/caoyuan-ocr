@@ -7,41 +7,26 @@ sys.path.append(os.path.realpath('..'))
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 
-from conf.image import *
+from conf.image_conf import min_num_of_chars
+from conf.image_conf import max_num_of_chars
+from conf.image_conf import image_width
+from conf.image_conf import image_height
+from conf.image_conf import background_color
+from conf.image_conf import text_color
+from conf.image_conf import chs_font
+from conf.image_conf import font_max_size
+from conf.image_conf import font_min_size
 
-
-def get_font_fullpaths(category):
-    path = None
-    if category == 'chs':
-        path = os.path.join(font_dir, 'chs')
-    elif category == 'en':
-        path = os.path.join(font_dir, 'en')
-    fullpaths = []
-    for filename in os.listdir(path):
-        fullpath = os.path.join(path, filename)
-        if os.path.isfile(fullpath):
-            fullpaths.append(fullpath)
-    return fullpaths
+from util.font_util import gen_random_font
+from util.string_util import gen_chars
 
 
 def gen_image():
-    num_of_chars = np.random.randint(min_num_of_chars, max_num_of_chars + 1)
-    chars = []
-    for idx in range(0, num_of_chars):
-        if np.random.uniform() > 0.5:
-            digit_idx = np.random.randint(len(digits))
-            chars.append(digits[digit_idx])
-        else:
-            letter_idx = np.random.randint(len(letters))
-            chars.append(letters[letter_idx])
+    chars = gen_chars(min_num_of_chars, max_num_of_chars)
+    font_fullpath, font_size = gen_random_font(chs_font, font_min_size, font_max_size)
 
     image = Image.new("RGB", (image_width, image_height), background_color)
     draw = ImageDraw.Draw(image)
-
-    font_fullpaths = get_font_fullpaths(category='en')
-    fullpath_idx = np.random.randint(len(font_fullpaths))
-    font_fullpath = font_fullpaths[fullpath_idx]
-    font_size = np.random.randint(min_font_size, max_font_size)
 
     for idx in range(0, len(chars)):
         char = chars[idx]
@@ -56,4 +41,4 @@ def gen_image():
         offset = (width_offset, height_offset)
         draw.text(offset, char, font=font, fill=text_color)
 
-    return np.array(image), chars
+    return chars, np.array(image)

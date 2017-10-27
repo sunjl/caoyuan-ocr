@@ -5,6 +5,8 @@ import os
 
 sys.path.append(os.path.realpath('..'))
 
+from PIL import ImageFont
+
 from conf.image_conf import font_dir
 from conf.image_conf import chs_font
 from conf.image_conf import en_font
@@ -29,4 +31,16 @@ def gen_random_font(category, min_size, max_size):
     idx = np.random.randint(len(fullpaths))
     fullpath = fullpaths[idx]
     size = np.random.randint(min_size, max_size)
-    return fullpath, size
+    font = ImageFont.truetype(fullpath, size)
+    return font
+
+
+def get_char_sizes(font, chars):
+    widths = []
+    heights = []
+    for idx in range(0, len(chars)):
+        char = chars[idx]
+        width, height = font.getsize(char)
+        widths.append(width)
+        heights.append(height)
+    return widths, heights

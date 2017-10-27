@@ -7,7 +7,7 @@ sys.path.append(os.path.realpath('..'))
 from conf.image_conf import image_width
 from conf.image_conf import image_height
 
-num_epoch = 500
+num_epoch = 1000
 input_shape = (image_height, image_width, 3)
 batch_size = 32
 patience = 10

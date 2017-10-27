@@ -132,7 +132,7 @@ def train(epochs=num_epoch):
         steps_per_epoch=batch_size,
         epochs=epochs,
         verbose=2,
-        callbacks=callbacks,
+        # callbacks=callbacks,
         validation_data=batch_generator(batch_size),
         validation_steps=batch_size)
 

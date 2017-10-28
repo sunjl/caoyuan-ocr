@@ -1,10 +1,11 @@
 import sys
 
-import numpy as np
 import os
 
 sys.path.append(os.path.realpath('..'))
 
+import random
+import numpy as np
 from PIL import ImageFont
 
 from conf.image_conf import font_dir
@@ -28,8 +29,7 @@ def get_font_fullpaths(category):
 
 def gen_random_font(category, min_size, max_size):
     fullpaths = get_font_fullpaths(category)
-    idx = np.random.randint(len(fullpaths))
-    fullpath = fullpaths[idx]
+    fullpath = random.choice(fullpaths)
     size = np.random.randint(min_size, max_size)
     font = ImageFont.truetype(fullpath, size)
     return font

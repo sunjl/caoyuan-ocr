@@ -13,7 +13,7 @@ from conf.image_conf import image_width
 from conf.image_conf import image_height
 from conf.image_conf import background_color
 from conf.image_conf import text_color
-from conf.image_conf import chs_font
+from conf.image_conf import en_font
 from conf.image_conf import font_max_size
 from conf.image_conf import font_min_size
 
@@ -24,7 +24,7 @@ from util.string_util import gen_chars
 
 def gen_image():
     chars = gen_chars(min_num_of_chars, max_num_of_chars)
-    font = gen_random_font(chs_font, font_min_size, font_max_size)
+    font = gen_random_font(en_font, font_min_size, font_max_size)
 
     char_widths, char_heights = get_char_sizes(font, chars)
     min_char_width = min(char_widths)
@@ -40,8 +40,7 @@ def gen_image():
     image = Image.new("RGB", (image_width, image_height), background_color)
     draw = ImageDraw.Draw(image)
 
-    for idx in range(0, len(chars)):
-        char = chars[idx]
+    for char in chars:
         font_width, font_height = font.getsize(char)
 
         width_offset += np.random.randint(min_char_width - 1, max_char_width + 1)

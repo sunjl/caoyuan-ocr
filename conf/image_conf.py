@@ -16,6 +16,6 @@ min_num_of_chars = 1
 
 image_width = 192
 image_height = 48
-image_channel = 3
+image_channels = 3
 background_color = (0, 0, 0)
 text_color = (255, 255, 255)

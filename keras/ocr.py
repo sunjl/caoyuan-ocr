@@ -45,7 +45,6 @@ def batch_generator(size):
         for i in range(size):
             chars, image = image_util.gen_image()
             chars_length = len(chars)
-
             head1 = np.zeros((max_num_of_chars * dict_classes), np.int32)
             head2 = np.zeros((max_num_of_chars - min_num_of_chars + 1), np.int32)
 

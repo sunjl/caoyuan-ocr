@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.path.realpath('..'))
 
+import random
 import numpy as np
 from PIL import Image, ImageDraw
 
@@ -33,7 +34,7 @@ def gen_image():
     total_char_width = max_char_width * len(chars)
     width_offset_limit = (image_width - total_char_width) // 2
     if width_offset_limit > 0:
-        width_offset = np.random.randint(width_offset_limit)
+        width_offset = random.randint(1, width_offset_limit)
     else:
         width_offset = 0
 
@@ -43,11 +44,11 @@ def gen_image():
     for char in chars:
         font_width, font_height = font.getsize(char)
 
-        width_offset += np.random.randint(min_char_width - 1, max_char_width + 1)
+        width_offset += random.randint(min_char_width, max_char_width)
 
         height_offset_limit = (image_height - font_height) // 2
         if height_offset_limit > 0:
-            height_offset = np.random.randint(height_offset_limit)
+            height_offset = random.randint(1, height_offset_limit)
         else:
             height_offset = 0
 

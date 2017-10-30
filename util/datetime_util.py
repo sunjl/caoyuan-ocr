@@ -1,10 +1,7 @@
-# _*_ coding: utf-8 _*_
-
 import datetime
+import re
 
 import pytz
-
-import re
 
 
 def parse_date(date_str, timezone='Asia/Shanghai'):

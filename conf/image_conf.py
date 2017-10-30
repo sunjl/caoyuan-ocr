@@ -1,5 +1,3 @@
-# _*_ coding: utf-8 _*_
-
 import string
 
 font_dir = '../font'

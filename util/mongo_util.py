@@ -1,6 +1,5 @@
-# _*_ coding: utf-8 _*_
-
 from pymongo import MongoClient
+
 from web.config import config
 
 mongo_config = config['mongo']

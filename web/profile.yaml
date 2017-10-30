@@ -1,0 +1,8 @@
+mongo:
+  host: 'localhost'
+  port: 27017
+  database: 'caoyuan'
+  username:
+  password:
+
+upload_dir : '/tmp/caoyuan_ocr/upload'

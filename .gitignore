@@ -2,5 +2,6 @@ data/
 output/
 python-env/
 .idea/
+*.DS_Store
 *.py[cod]
 *.iml

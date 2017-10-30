@@ -35,8 +35,6 @@ FLASK_APP=app.py flask run
 ```
 
 Todo:
-* MongoDB CRUD, GridFS
-* Flask HTTP JSON API
 * Algorithms:
   * Object Detection: Faster-RCNN, R-FCN, SSD, CTPN
   * Semantic Segmentation: FCN

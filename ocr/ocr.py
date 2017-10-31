@@ -19,20 +19,20 @@ from keras.models import Model
 from keras.optimizers import Adadelta
 from keras.utils import plot_model
 
-from conf.image_conf import min_num_of_chars
-from conf.image_conf import max_num_of_chars
-from conf.image_conf import dict_classes
-from conf.image_conf import dict_chars
+from config.image_config import min_num_of_chars
+from config.image_config import max_num_of_chars
+from config.image_config import dict_classes
+from config.image_config import dict_chars
 
-from conf.keras_conf import batch_size
-from conf.keras_conf import input_shape
-from conf.keras_conf import output_dir
-from conf.keras_conf import model_plot_name
-from conf.keras_conf import num_epoch
-from conf.keras_conf import patience
-from conf.keras_conf import model_h5_name
-from conf.keras_conf import test_data_size
-from conf.keras_conf import test_data_dir
+from config.ocr_config import batch_size
+from config.ocr_config import input_shape
+from config.ocr_config import output_dir
+from config.ocr_config import model_plot_name
+from config.ocr_config import num_epoch
+from config.ocr_config import patience
+from config.ocr_config import model_h5_name
+from config.ocr_config import test_data_size
+from config.ocr_config import test_data_dir
 
 from util import image_util
 

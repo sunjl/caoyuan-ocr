@@ -8,15 +8,15 @@ import random
 import numpy as np
 from PIL import Image, ImageDraw
 
-from conf.image_conf import min_num_of_chars
-from conf.image_conf import max_num_of_chars
-from conf.image_conf import image_width
-from conf.image_conf import image_height
-from conf.image_conf import background_color
-from conf.image_conf import text_color
-from conf.image_conf import en_font
-from conf.image_conf import font_max_size
-from conf.image_conf import font_min_size
+from config.image_config import min_num_of_chars
+from config.image_config import max_num_of_chars
+from config.image_config import image_width
+from config.image_config import image_height
+from config.image_config import background_color
+from config.image_config import text_color
+from config.image_config import en_font
+from config.image_config import font_max_size
+from config.image_config import font_min_size
 
 from util.font_util import gen_random_font
 from util.font_util import get_char_sizes

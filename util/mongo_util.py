@@ -1,6 +1,12 @@
+import sys
+
+import os
+
+sys.path.append(os.path.realpath('..'))
+
 from pymongo import MongoClient
 
-from web.config import config
+from config.common_config import config
 
 mongo_config = config['mongo']
 

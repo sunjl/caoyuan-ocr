@@ -7,9 +7,9 @@ sys.path.append(os.path.realpath('..'))
 import random
 from PIL import ImageFont
 
-from conf.image_conf import font_dir
-from conf.image_conf import chs_font
-from conf.image_conf import en_font
+from config.image_config import font_dir
+from config.image_config import chs_font
+from config.image_config import en_font
 
 
 def get_font_fullpaths(category):

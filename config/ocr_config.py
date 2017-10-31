@@ -4,8 +4,8 @@ import os
 
 sys.path.append(os.path.realpath('..'))
 
-from conf.image_conf import image_width
-from conf.image_conf import image_height
+from config.image_config import image_width
+from config.image_config import image_height
 
 num_epoch = 1000
 input_shape = (image_height, image_width, 3)

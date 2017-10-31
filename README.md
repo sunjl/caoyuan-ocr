@@ -9,6 +9,7 @@ Development environment (see [Instructions](https://github.com/sunjl/development
 * OpenCV 3.3
 * Tensorflow 1.3
 * Keras 2.0
+* MongoDB 3.5
 
 
 Install dependencies:
@@ -22,7 +23,7 @@ sudo pip3 install -r requirements.txt
 Execute tasks:
 
 ```sh
-cd keras
+cd ocr
 python3 ocr.py train
 python3 ocr.py gen_test_data
 python3 ocr.py evaluate
@@ -30,8 +31,7 @@ python3 ocr.py evaluate
 
 Start server:
 ```sh
-cd web
-FLASK_APP=app.py flask run
+FLASK_APP=main.py flask run
 ```
 
 Todo:
@@ -40,12 +40,3 @@ Todo:
   * Semantic Segmentation: FCN
   * Text Recognition: LSTM, CTC, Attention
 * Support card/license/identification/receipt/table
-
-Bug:
-* train task randomly failed with following error message:
-```
-Exception ignored in: <bound method BaseSession.__del__ of <tensorflow.python.client.session.Session object at 0x7fa5b2c84400>>
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/tensorflow/python/client/session.py", line 701, in __del__
-TypeError: 'NoneType' object is not callable
-```

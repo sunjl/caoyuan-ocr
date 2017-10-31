@@ -11,7 +11,7 @@ import yaml
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-config = yaml.load(open('profile.yaml'))
+config = yaml.load(open('config/profile.yaml'))
 
 upload_dir = config['upload_dir']
 

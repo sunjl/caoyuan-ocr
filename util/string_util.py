@@ -6,8 +6,8 @@ sys.path.append(os.path.realpath('..'))
 
 import random
 
-from conf.image_conf import digits
-from conf.image_conf import letters
+from config.image_config import digits
+from config.image_config import letters
 
 
 def gen_chars(min_size, max_size):

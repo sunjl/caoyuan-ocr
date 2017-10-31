@@ -24,9 +24,9 @@ Execute tasks:
 
 ```sh
 cd ocr
-python3 ocr.py train
-python3 ocr.py gen_test_data
-python3 ocr.py evaluate
+python3 gen_ocr.py train
+python3 gen_ocr.py gen_test_data
+python3 gen_ocr.py evaluate
 ```
 
 Start server:

@@ -8,23 +8,12 @@ import mimetypes
 from bson.objectid import ObjectId
 import gridfs
 
-from util.mongo_util import get_conn
+from util.mongo_util import get_db
 from config.common_config import logger
 from config.common_config import upload_dir
 
-
-class Storage:
-    def __init__(self, id, user_id, filename, content_type, length, upload_date):
-        self.id = id
-        self.user_id = user_id
-        self.filename = filename
-        self.content_type = content_type
-        self.length = length
-        self.upload_date = upload_date
-
-
-conn = get_conn()
-gfs = gridfs.GridFS(conn)
+db = get_db()
+gfs = gridfs.GridFS(db)
 
 
 def store_fs(file):

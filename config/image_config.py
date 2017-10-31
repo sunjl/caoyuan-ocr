@@ -17,5 +17,10 @@ min_num_of_chars = 1
 image_width = 192
 image_height = 48
 image_channels = 3
-background_color = (0, 0, 0)
-text_color = (255, 255, 255)
+black_color = (0, 0, 0)
+white_color = (255, 255, 255)
+green_color = (0, 255, 0)
+line_thickness = 1
+
+train_category = 'train'
+evaluate_category = 'evaluate'

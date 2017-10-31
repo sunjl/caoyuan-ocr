@@ -4,6 +4,7 @@ import os
 
 sys.path.append(os.path.realpath('..'))
 
+import cv2
 import random
 import numpy as np
 from PIL import Image, ImageDraw
@@ -12,8 +13,10 @@ from config.image_config import min_num_of_chars
 from config.image_config import max_num_of_chars
 from config.image_config import image_width
 from config.image_config import image_height
-from config.image_config import background_color
-from config.image_config import text_color
+from config.image_config import black_color
+from config.image_config import white_color
+from config.image_config import green_color
+from config.image_config import line_thickness
 from config.image_config import en_font
 from config.image_config import font_max_size
 from config.image_config import font_min_size
@@ -38,7 +41,7 @@ def gen_image():
     else:
         width_offset = 0
 
-    image = Image.new("RGB", (image_width, image_height), background_color)
+    image = Image.new("RGB", (image_width, image_height), black_color)
     draw = ImageDraw.Draw(image)
 
     for char in chars:
@@ -53,6 +56,28 @@ def gen_image():
             height_offset = 0
 
         offset = (width_offset, height_offset)
-        draw.text(offset, char, font=font, fill=text_color)
+        draw.text(offset, char, font=font, fill=white_color)
 
     return chars, np.array(image)
+
+
+def crop(src_filename, dst_filename, pt1, pt2):
+    src_image = cv2.imread(src_filename)
+    x1, y1 = pt1
+    x2, y2 = pt2
+    dst_image = src_image[x1:x2, y1:y2]
+    cv2.imwrite(dst_filename, dst_image)
+
+
+def resize(src_filename, dst_filename, width=image_width, height=image_height):
+    src_image = cv2.imread(src_filename)
+    dst_image = cv2.resize(src_image, (width, height), interpolation=cv2.INTER_CUBIC)
+    cv2.imwrite(dst_filename, dst_image)
+
+
+def draw_rectangle(src_filename, dst_filename, pt1, pt2, color=green_color, thickness=line_thickness):
+    src_image = cv2.imread(src_filename)
+    x1, y1 = pt1
+    x2, y2 = pt2
+    dst_image = cv2.rectangle(src_image, (x1, y1), (x2, y2), color, thickness)
+    cv2.imwrite(dst_filename, dst_image)

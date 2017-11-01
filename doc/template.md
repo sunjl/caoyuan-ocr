@@ -7,14 +7,18 @@ curl -v 'http://localhost:5000/template/create' \
       "kind": "train",
       "name": "名称",
       "regions": [
-        {"pt1": {"x": 100, "y": 50}, "pt2": {"x": 200, "y": 100}}
+        {
+          "name": "区域01",
+          "pt1": {"x": 100, "y": 50}, 
+          "pt2": {"x": 200, "y": 100}
+        }
       ],
       "storage_id": "59f6b2ebb2c79a6c3a969331",
       "filename": "测试.png"
     }'
 
 curl -v -G 'http://localhost:5000/template/get' \
-  --data-urlencode 'id=59f6b2ebb2c79a6c3a969331'
+  --data-urlencode 'id=59f84711b2c79a6ed6b6d3c6'
 
 curl -v -G 'http://localhost:5000/template/exist' \
   --data-urlencode 'field=name' \
@@ -28,7 +32,7 @@ curl -v 'http://localhost:5000/template/update' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{
-      "id": "59f6b2ebb2c79a6c3a969331",
+      "id": "59f84711b2c79a6ed6b6d3c6",
       "name": "名称更新",
       "regions": [
         {"pt1": {"x": 100, "y": 50}, "pt2": {"x": 200, "y": 100}},
@@ -40,6 +44,6 @@ curl -v 'http://localhost:5000/template/delete' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{
-        "id": "59f6b2ebb2c79a6c3a969331"
+        "id": "59f84711b2c79a6ed6b6d3c6"
     }'
 ```

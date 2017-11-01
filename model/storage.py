@@ -5,7 +5,6 @@ import os
 sys.path.append(os.path.realpath('..'))
 
 import mimetypes
-from bson.objectid import ObjectId
 import gridfs
 
 from util.mongo_util import get_db
@@ -35,12 +34,14 @@ def store_gridfs(file):
             filename = file.filename
             extension = filename.split('.')[-1]
             content_type = mimetypes.types_map['.' + extension]
-            oid = gfs.put(file, filename=filename, content_type=content_type)
-            logger.debug('--oid--' + str(oid))
+            id = gfs.put(file, filename=filename, content_type=content_type)
+            logger.debug('--id--' + str(id))
+            read_file = read_gridfs(id)
             obj = {
-                'id': str(oid),
-                'filename': filename,
-                'content_type': content_type
+                'id': str(id),
+                'filename': read_file.filename,
+                'content_type': read_file.content_type,
+                'length': read_file.length
             }
         except Exception as e:
             logger.debug('--store_gridfs--' + str(e))
@@ -49,21 +50,19 @@ def store_gridfs(file):
 
 def read_gridfs(id):
     file = None
-    if id and ObjectId.is_valid(id):
-        try:
-            file = gfs.get(ObjectId(id))
-        except Exception as e:
-            logger.debug('--read_gridfs--' + str(e))
+    try:
+        file = gfs.get(id)
+    except Exception as e:
+        logger.debug('--read_gridfs--' + str(e))
     return file
 
 
 def delete_gridfs(id):
     result = None
-    if id and ObjectId.is_valid(id):
-        try:
-            gfs.delete(ObjectId(id))
-            result = True
-        except Exception as e:
-            logger.debug('--delete_gridfs--' + str(e))
-            result = False
+    try:
+        gfs.delete(id)
+        result = True
+    except Exception as e:
+        logger.debug('--delete_gridfs--' + str(e))
+        result = False
     return result

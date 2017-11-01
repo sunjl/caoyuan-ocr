@@ -32,7 +32,7 @@ def convert_template_from_json(data):
     obj = {}
 
     id = data.get('id')
-    if (id is not None) and ObjectId.is_valid(id):
+    if id and ObjectId.is_valid(id):
         obj['_id'] = ObjectId(id)
 
     user_id = data.get('user_id')
@@ -70,18 +70,18 @@ def create_template(data):
         try:
             obj = convert_template_from_json(data)
             insert_result = template_collection.insert_one(obj)
-            oid = insert_result.inserted_id
-            logger.debug('--oid--' + str(oid))
-            result = get_template(oid)
+            id = insert_result.inserted_id
+            logger.debug('--id--' + str(id))
+            result = get_template(id)
         except Exception as e:
             logger.debug('--create_template--' + str(e))
     return result
 
 
-def get_template(oid):
+def get_template(id):
     result = None
     try:
-        result = template_collection.find_one({'_id': oid})
+        result = template_collection.find_one({'_id': id})
         logger.debug('--result--' + dumps(result))
     except Exception as e:
         logger.debug('--create_template--' + str(e))

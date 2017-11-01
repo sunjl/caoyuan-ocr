@@ -11,6 +11,7 @@ from flask import request, Response
 from config.common_config import logger
 from model.template import create_template
 from model.template import get_template
+from model.template import delete_template
 from model.template import convert_template_from_mongo
 
 from flask import Blueprint
@@ -52,3 +53,18 @@ def get():
     logger.debug('--response_data--' + response_data)
     resp = Response(response=response_data, status=201, content_type='application/json')
     return resp
+
+
+@template_app.route('/delete', methods=['POST'])
+def delete():
+    request_data = request.json
+    logger.debug('--request_data--' + str(request_data))
+    id = request_data.get('id')
+    if not (id and ObjectId.is_valid(id)):
+        return Response(status=400)
+
+    result = delete_template(ObjectId(id))
+    if result:
+        return Response(status=204)
+    else:
+        return Response(status=202)

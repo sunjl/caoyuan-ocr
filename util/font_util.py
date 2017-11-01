@@ -12,11 +12,11 @@ from config.image_config import chs_font
 from config.image_config import en_font
 
 
-def get_font_fullpaths(category):
+def get_font_fullpaths(kind):
     path = None
-    if category == chs_font:
+    if kind == chs_font:
         path = os.path.join(font_dir, chs_font)
-    elif category == en_font:
+    elif kind == en_font:
         path = os.path.join(font_dir, en_font)
     fullpaths = []
     for filename in os.listdir(path):
@@ -26,8 +26,8 @@ def get_font_fullpaths(category):
     return fullpaths
 
 
-def gen_random_font(category, min_size, max_size):
-    fullpaths = get_font_fullpaths(category)
+def gen_random_font(kind, min_size, max_size):
+    fullpaths = get_font_fullpaths(kind)
     fullpath = random.choice(fullpaths)
     size = random.randint(min_size, max_size)
     font = ImageFont.truetype(fullpath, size)

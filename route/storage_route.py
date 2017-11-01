@@ -63,7 +63,7 @@ def delete():
     if not (id and ObjectId.is_valid(id)):
         return Response(status=400)
 
-    result = delete_gridfs(id)
+    result = delete_gridfs(ObjectId(id))
     if result:
         return Response(status=204)
     else:

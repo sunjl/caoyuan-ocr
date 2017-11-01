@@ -15,11 +15,11 @@ template_collection = db['template']
 
 
 class Template:
-    def __init__(self, id, user_id, category, name, regions,
+    def __init__(self, id, user_id, kind, name, regions,
                  storage_id, filename, create_date, update_date):
         self.id = id
         self.user_id = user_id
-        self.category = category
+        self.kind = kind
         self.name = name
         self.regions = regions
         self.storage_id = storage_id
@@ -39,7 +39,7 @@ def convert_template_from_json(data):
     if user_id and ObjectId.is_valid(user_id):
         obj['user_id'] = ObjectId(user_id)
 
-    obj['category'] = data.get('category')
+    obj['kind'] = data.get('kind')
     obj['name'] = data.get('name')
     obj['regions'] = data.get('regions')
 
@@ -56,7 +56,7 @@ def convert_template_from_mongo(result):
     obj = {}
     obj['id'] = str(result.get('_id'))
     obj['user_id'] = str(result.get('user_id'))
-    obj['category'] = result.get('category')
+    obj['kind'] = result.get('kind')
     obj['name'] = result.get('name')
     obj['regions'] = result.get('regions')
     obj['storage_id'] = str(result.get('storage_id'))
@@ -87,5 +87,45 @@ def get_template(id):
         logger.debug('--create_template--' + str(e))
     return result
 
+
 # templates = template_collection.find({'status': 'waiting'})
 # template_collection.update({'_id': template_id}, {'$set': {'status': 'done'}}, False, True)
+
+
+def count_template(id):
+    count = None
+    try:
+        count = template_collection.count({'_id': id})
+        logger.debug('--count_template--' + dumps(count))
+    except Exception as e:
+        logger.debug('--count_template--' + str(e))
+    return count
+
+
+def exist_template(id):
+    result = None
+    try:
+        count = template_collection.count({'_id': id})
+        logger.debug('--count--' + str(count))
+        if count == 0:
+            result = False
+        elif count == 1:
+            result = True
+        logger.debug('--exist_template--' + dumps(result))
+    except Exception as e:
+        logger.debug('--exist_template--' + str(e))
+    return result
+
+
+def delete_template(id):
+    result = None
+    if not exist_template(id):
+        result = False
+    else:
+        try:
+            template_collection.delete_one({'_id': id})
+            if not exist_template(id):
+                result = True
+        except Exception as e:
+            logger.debug('--delete_template--' + str(e))
+    return result

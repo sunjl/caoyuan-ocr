@@ -4,7 +4,7 @@ curl -v 'http://localhost:5000/template/create' \
   --header "Content-Type: application/json" \
   --data '{
       "user_id": "59f7e576b2c79a43548402e0",
-      "category": "train",
+      "kind": "train",
       "name": "名称",
       "regions": [
         {"pt1": {"x": 100, "y": 50}, "pt2": {"x": 200, "y": 100}}
@@ -38,5 +38,8 @@ curl -v 'http://localhost:5000/template/update' \
 
 curl -v 'http://localhost:5000/template/delete' \
   --request POST \
-  --data-urlencode 'id=59f6b2ebb2c79a6c3a969331'
+  --header "Content-Type: application/json" \
+  --data '{
+        "id": "59f6b2ebb2c79a6c3a969331"
+    }'
 ```

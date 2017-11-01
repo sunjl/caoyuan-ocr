@@ -5,6 +5,7 @@ import os
 sys.path.append(os.path.realpath('..'))
 
 import mimetypes
+from bson.json_util import dumps
 import gridfs
 
 from util.mongo_util import get_db
@@ -57,12 +58,25 @@ def read_gridfs(id):
     return file
 
 
-def delete_gridfs(id):
+def exist_gridfs(id):
     result = None
     try:
-        gfs.delete(id)
-        result = True
+        result = gfs.exists({'_id': id})
+        logger.debug('--exist_gridfs--' + dumps(result))
     except Exception as e:
-        logger.debug('--delete_gridfs--' + str(e))
+        logger.debug('--exist_gridfs--' + str(e))
+    return result
+
+
+def delete_gridfs(id):
+    result = None
+    if not exist_gridfs(id):
         result = False
+    else:
+        try:
+            gfs.delete(id)
+            if not exist_gridfs(id):
+                result = True
+        except Exception as e:
+            logger.debug('--delete_gridfs--' + str(e))
     return result

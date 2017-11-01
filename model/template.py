@@ -39,15 +39,26 @@ def convert_template_from_json(data):
     if user_id and ObjectId.is_valid(user_id):
         obj['user_id'] = ObjectId(user_id)
 
-    obj['kind'] = data.get('kind')
-    obj['name'] = data.get('name')
-    obj['regions'] = data.get('regions')
+    kind = data.get('kind')
+    if kind:
+        obj['kind'] = kind
+
+    name = data.get('name')
+    if name:
+        obj['name'] = name
+
+    regions = data.get('regions')
+    if regions:
+        obj['regions'] = regions
 
     storage_id = data.get('storage_id')
     if storage_id and ObjectId.is_valid(storage_id):
         obj['storage_id'] = ObjectId(storage_id)
 
-    obj['filename'] = data.get('filename')
+    filename = data.get('filename')
+    if filename:
+        obj['filename'] = filename
+
     logger.debug('--obj--' + str(obj))
     return obj
 
@@ -84,12 +95,11 @@ def get_template(id):
         result = template_collection.find_one({'_id': id})
         logger.debug('--result--' + dumps(result))
     except Exception as e:
-        logger.debug('--create_template--' + str(e))
+        logger.debug('--get_template--' + str(e))
     return result
 
 
 # templates = template_collection.find({'status': 'waiting'})
-# template_collection.update({'_id': template_id}, {'$set': {'status': 'done'}}, False, True)
 
 
 def count_template(id):
@@ -114,6 +124,21 @@ def exist_template(id):
         logger.debug('--exist_template--' + dumps(result))
     except Exception as e:
         logger.debug('--exist_template--' + str(e))
+    return result
+
+
+def update_template(data):
+    result = None
+    if data:
+        try:
+            obj = convert_template_from_json(data)
+            id = obj.get('_id')
+            logger.debug('--id--' + str(id))
+            del obj['_id']
+            template_collection.update_one({'_id': id}, {'$set': obj})
+            result = get_template(id)
+        except Exception as e:
+            logger.debug('--update_template--' + str(e))
     return result
 
 

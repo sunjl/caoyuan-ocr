@@ -11,6 +11,7 @@ from flask import request, Response
 from config.common_config import logger
 from model.image import create_image
 from model.image import get_image
+from model.image import update_image
 from model.image import delete_image
 from model.image import convert_image_from_mongo
 
@@ -23,7 +24,7 @@ image_app = Blueprint('image_controller', __name__)
 def create():
     request_data = request.json
     logger.debug('--request_data--' + str(request_data))
-    storage_id = request_data['storage_id']
+    storage_id = request_data.get('storage_id')
     if not storage_id:
         return Response(status=400)
 
@@ -52,6 +53,25 @@ def get():
     response_data = json.dumps(obj)
     logger.debug('--response_data--' + response_data)
     resp = Response(response=response_data, status=201, content_type='application/json')
+    return resp
+
+
+@image_app.route('/update', methods=['POST'])
+def update():
+    request_data = request.json
+    logger.debug('--request_data--' + str(request_data))
+    id = request_data.get('id')
+    if not id:
+        return Response(status=400)
+
+    result = update_image(request_data)
+    if not result:
+        return Response(status=500)
+
+    obj = convert_image_from_mongo(result)
+    response_data = json.dumps(obj)
+    logger.debug('--response_data--' + response_data)
+    resp = Response(response=response_data, status=200, content_type='application/json')
     return resp
 
 

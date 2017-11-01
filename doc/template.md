@@ -37,7 +37,7 @@ curl -v 'http://localhost:5000/template/update' \
       "regions": [
         {"pt1": {"x": 100, "y": 50}, "pt2": {"x": 200, "y": 100}},
         {"pt1": {"x": 200, "y": 100}, "pt2": {"x": 300, "y": 150}}
-      ],
+      ]
     }'
 
 curl -v 'http://localhost:5000/template/delete' \

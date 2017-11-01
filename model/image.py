@@ -15,13 +15,13 @@ image_collection = db['image']
 
 
 class Image:
-    def __init__(self, id, user_id, kind, name, template_id, regions,
+    def __init__(self, id, user_id, kind, name, image_id, regions,
                  storage_id, filename, status, create_date, update_date):
         self.id = id
         self.user_id = user_id
         self.kind = kind
         self.name = name
-        self.template_id = template_id
+        self.image_id = image_id
         self.regions = regions
         self.storage_id = storage_id
         self.filename = filename
@@ -41,18 +41,26 @@ def convert_image_from_json(data):
     if user_id and ObjectId.is_valid(user_id):
         obj['user_id'] = ObjectId(user_id)
 
-    template_id = data.get('template_id')
-    if template_id and ObjectId.is_valid(template_id):
-        obj['template_id'] = ObjectId(template_id)
+    image_id = data.get('image_id')
+    if image_id and ObjectId.is_valid(image_id):
+        obj['image_id'] = ObjectId(image_id)
 
-    obj['regions'] = data.get('regions')
+    regions = data.get('regions')
+    if regions:
+        obj['regions'] = regions
 
     storage_id = data.get('storage_id')
     if storage_id and ObjectId.is_valid(storage_id):
         obj['storage_id'] = ObjectId(storage_id)
 
-    obj['filename'] = data.get('filename')
-    obj['status'] = data.get('status')
+    filename = data.get('filename')
+    if filename:
+        obj['filename'] = filename
+
+    status = data.get('status')
+    if status:
+        obj['status'] = status
+
     logger.debug('--obj--' + str(obj))
     return obj
 
@@ -61,7 +69,7 @@ def convert_image_from_mongo(result):
     obj = {}
     obj['id'] = str(result.get('_id'))
     obj['user_id'] = str(result.get('user_id'))
-    obj['template_id'] = str(result.get('template_id'))
+    obj['image_id'] = str(result.get('image_id'))
     obj['regions'] = result.get('regions')
     obj['storage_id'] = str(result.get('storage_id'))
     obj['filename'] = result.get('filename')
@@ -89,7 +97,7 @@ def get_image(id):
         result = image_collection.find_one({'_id': id})
         logger.debug('--result--' + dumps(result))
     except Exception as e:
-        logger.debug('--create_image--' + str(e))
+        logger.debug('--get_image--' + str(e))
     return result
 
 
@@ -115,6 +123,21 @@ def exist_image(id):
         logger.debug('--exist_image--' + dumps(result))
     except Exception as e:
         logger.debug('--exist_image--' + str(e))
+    return result
+
+
+def update_image(data):
+    result = None
+    if data:
+        try:
+            obj = convert_image_from_json(data)
+            id = obj.get('_id')
+            logger.debug('--id--' + str(id))
+            del obj['_id']
+            image_collection.update_one({'_id': id}, {'$set': obj})
+            result = get_image(id)
+        except Exception as e:
+            logger.debug('--update_image--' + str(e))
     return result
 
 

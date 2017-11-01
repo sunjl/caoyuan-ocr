@@ -16,7 +16,7 @@ template_collection = db['template']
 
 class Template:
     def __init__(self, id, user_id, kind, name, regions,
-                 storage_id, filename, create_date, update_date):
+                 storage_id, filename, status, create_date, update_date):
         self.id = id
         self.user_id = user_id
         self.kind = kind
@@ -24,6 +24,7 @@ class Template:
         self.regions = regions
         self.storage_id = storage_id
         self.filename = filename
+        self.status = status
         self.create_date = create_date
         self.update_date = update_date
 
@@ -59,6 +60,10 @@ def convert_template_from_json(data):
     if filename:
         obj['filename'] = filename
 
+    status = data.get('status')
+    if status:
+        obj['status'] = status
+
     logger.debug('--obj--' + str(obj))
     return obj
 
@@ -72,6 +77,7 @@ def convert_template_from_mongo(result):
     obj['regions'] = result.get('regions')
     obj['storage_id'] = str(result.get('storage_id'))
     obj['filename'] = result.get('filename')
+    obj['status'] = result.get('status')
     return obj
 
 

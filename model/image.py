@@ -15,13 +15,13 @@ image_collection = db['image']
 
 
 class Image:
-    def __init__(self, id, user_id, kind, name, image_id, regions,
+    def __init__(self, id, user_id, kind, name, template_id, regions,
                  storage_id, filename, status, create_date, update_date):
         self.id = id
         self.user_id = user_id
         self.kind = kind
         self.name = name
-        self.image_id = image_id
+        self.template_id = template_id
         self.regions = regions
         self.storage_id = storage_id
         self.filename = filename
@@ -41,9 +41,9 @@ def convert_image_from_json(data):
     if user_id and ObjectId.is_valid(user_id):
         obj['user_id'] = ObjectId(user_id)
 
-    image_id = data.get('image_id')
-    if image_id and ObjectId.is_valid(image_id):
-        obj['image_id'] = ObjectId(image_id)
+    template_id = data.get('template_id')
+    if template_id and ObjectId.is_valid(template_id):
+        obj['template_id'] = ObjectId(template_id)
 
     regions = data.get('regions')
     if regions:
@@ -69,7 +69,7 @@ def convert_image_from_mongo(result):
     obj = {}
     obj['id'] = str(result.get('_id'))
     obj['user_id'] = str(result.get('user_id'))
-    obj['image_id'] = str(result.get('image_id'))
+    obj['template_id'] = str(result.get('template_id'))
     obj['regions'] = result.get('regions')
     obj['storage_id'] = str(result.get('storage_id'))
     obj['filename'] = result.get('filename')

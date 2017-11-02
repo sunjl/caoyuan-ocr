@@ -63,9 +63,9 @@ def gen_image():
 
 def crop(src_filename, dst_filename, pt1, pt2):
     src_image = cv2.imread(src_filename)
-    x1, y1 = pt1
-    x2, y2 = pt2
-    dst_image = src_image[x1:x2, y1:y2]
+    x1, y1 = pt1.get('x'), pt1.get('y')
+    x2, y2 = pt2.get('x'), pt2.get('y')
+    dst_image = src_image[y1:y2, x1:x2]  # [row_start:row_end, col_start:col:end]
     cv2.imwrite(dst_filename, dst_image)
 
 
@@ -77,7 +77,7 @@ def resize(src_filename, dst_filename, width=image_width, height=image_height):
 
 def draw_rectangle(src_filename, dst_filename, pt1, pt2, color=green_color, thickness=line_thickness):
     src_image = cv2.imread(src_filename)
-    x1, y1 = pt1
-    x2, y2 = pt2
+    x1, y1 = pt1.get('x'), pt1.get('y')
+    x2, y2 = pt2.get('x'), pt2.get('y')
     dst_image = cv2.rectangle(src_image, (x1, y1), (x2, y2), color, thickness)
     cv2.imwrite(dst_filename, dst_image)

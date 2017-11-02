@@ -13,6 +13,7 @@ from model.image import create_image
 from model.image import get_image
 from model.image import update_image
 from model.image import delete_image
+from model.image import crop_image
 from model.image import convert_image_from_mongo
 
 from flask import Blueprint
@@ -88,3 +89,18 @@ def delete():
         return Response(status=204)
     else:
         return Response(status=202)
+
+
+@image_app.route('/crop', methods=['POST'])
+def crop():
+    request_data = request.json
+    logger.debug('--request_data--' + str(request_data))
+    id = request_data.get('id')
+    if not (id and ObjectId.is_valid(id)):
+        return Response(status=400)
+
+    result = crop_image(ObjectId(id))
+    if result:
+        return Response(status=201)
+    else:
+        return Response(status=404)

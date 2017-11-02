@@ -53,4 +53,11 @@ curl -v 'http://localhost:5000/image/delete' \
   --data '{
         "id": "59f935f6b2c79a6da6610f3c"
     }'
+
+curl -v 'http://localhost:5000/image/crop' \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --data '{
+        "id": "59f935f6b2c79a6da6610f3c"
+    }'
 ```

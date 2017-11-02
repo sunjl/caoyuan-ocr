@@ -34,7 +34,7 @@ from config.ocr_config import model_h5_name
 from config.ocr_config import test_data_size
 from config.ocr_config import test_data_dir
 
-from util import image_util
+from util.image_util import gen_image
 
 
 def batch_generator(size):
@@ -43,7 +43,7 @@ def batch_generator(size):
         head1_list = []
         head2_list = []
         for i in range(size):
-            chars, image = image_util.gen_image()
+            chars, image = gen_image()
             chars_length = len(chars)
             head1 = np.zeros((max_num_of_chars * dict_classes), np.int32)
             head2 = np.zeros((max_num_of_chars - min_num_of_chars + 1), np.int32)
@@ -148,7 +148,7 @@ def gen_test_data(size=test_data_size):
     os.makedirs(test_data_dir)
 
     for i in range(0, size):
-        chars, img = image_util.gen_image()
+        chars, img = gen_image()
         name = ''.join(char for char in chars)
         cv2.imwrite(os.path.join(test_data_dir, name + '.png'), img)
 

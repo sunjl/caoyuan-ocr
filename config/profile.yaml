@@ -6,3 +6,4 @@ mongo:
   password:
 
 upload_dir : '/tmp/caoyuan_ocr/upload'
+image_dir : '/tmp/caoyuan_ocr/image'

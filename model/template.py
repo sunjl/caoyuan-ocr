@@ -99,7 +99,7 @@ def get_template(id):
     result = None
     try:
         result = template_collection.find_one({'_id': id})
-        logger.debug('--result--' + dumps(result))
+        logger.debug('--get_template--' + dumps(result))
     except Exception as e:
         logger.debug('--get_template--' + str(e))
     return result

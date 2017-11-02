@@ -7,8 +7,12 @@ sys.path.append(os.path.realpath('..'))
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 
-from util.mongo_util import get_db
+from config.common_config import image_dir
 from config.common_config import logger
+from util.mongo_util import get_db
+from util.image_util import crop
+from model.storage import read_gridfs
+from model.template import get_template
 
 db = get_db()
 image_collection = db['image']
@@ -41,6 +45,14 @@ def convert_image_from_json(data):
     if user_id and ObjectId.is_valid(user_id):
         obj['user_id'] = ObjectId(user_id)
 
+    kind = data.get('kind')
+    if kind:
+        obj['kind'] = kind
+
+    name = data.get('name')
+    if name:
+        obj['name'] = name
+
     template_id = data.get('template_id')
     if template_id and ObjectId.is_valid(template_id):
         obj['template_id'] = ObjectId(template_id)
@@ -69,6 +81,8 @@ def convert_image_from_mongo(result):
     obj = {}
     obj['id'] = str(result.get('_id'))
     obj['user_id'] = str(result.get('user_id'))
+    obj['kind'] = result.get('kind')
+    obj['name'] = result.get('name')
     obj['template_id'] = str(result.get('template_id'))
     obj['regions'] = result.get('regions')
     obj['storage_id'] = str(result.get('storage_id'))
@@ -95,7 +109,7 @@ def get_image(id):
     result = None
     try:
         result = image_collection.find_one({'_id': id})
-        logger.debug('--result--' + dumps(result))
+        logger.debug('--get_image--' + dumps(result))
     except Exception as e:
         logger.debug('--get_image--' + str(e))
     return result
@@ -153,3 +167,46 @@ def delete_image(id):
         except Exception as e:
             logger.debug('--delete_image--' + str(e))
     return result
+
+
+def crop_image(id):
+    image = get_image(id)
+    if not image:
+        return False
+
+    storage_id = image.get('storage_id')
+    file = read_gridfs(storage_id)
+    if not file:
+        return False
+
+    filename = file.filename
+    extension = filename.split('.')[-1]
+    bytes = file.read()
+
+    template_id = image.get('template_id')
+    template = get_template(template_id)
+    if not template:
+        return False
+
+    regions = template.get('regions')
+    if not regions:
+        return False
+
+    path = os.path.join(image_dir, str(id))
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    src_filename = os.path.join(path, filename)
+    logger.debug('--src_filename--' + src_filename)
+    f = open(src_filename, 'wb')
+    f.write(bytes)
+    f.close()
+
+    for region in regions:
+        region_name = region.get('name') + '.' + extension
+        dst_filename = os.path.join(path, region_name)
+        pt1 = region.get('pt1')
+        pt2 = region.get('pt2')
+        logger.debug('--dst_filename--' + dst_filename)
+        crop(src_filename, dst_filename, pt1, pt2)
+    return True

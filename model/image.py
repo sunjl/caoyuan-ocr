@@ -9,8 +9,11 @@ from bson.objectid import ObjectId
 
 from config.common_config import image_dir
 from config.common_config import logger
+from config.image_config import image_width
+from config.image_config import image_height
 from util.mongo_util import get_db
 from util.image_util import crop
+from util.image_util import resize
 from model.storage import read_gridfs
 from model.template import get_template
 
@@ -179,12 +182,6 @@ def crop_image(id):
     if not regions:
         return False
 
-    try:
-        image_collection.update_one({'_id': id}, {'$set': {'regions': regions}})
-    except Exception as e:
-        logger.debug('--crop_image--' + str(e))
-        return False
-
     path = os.path.join(image_dir, str(id))
     if not os.path.exists(path):
         os.makedirs(path)
@@ -196,6 +193,7 @@ def crop_image(id):
     f.close()
 
     for region in regions:
+        logger.debug('--region--' + str(region))
         try:
             region_name = region.get('name') + '.' + extension
             dst_filename = os.path.join(path, region_name)
@@ -203,9 +201,16 @@ def crop_image(id):
             pt2 = region.get('pt2')
             logger.debug('--dst_filename--' + dst_filename)
             crop(src_filename, dst_filename, pt1, pt2)
+            resize(src_filename, dst_filename, width=image_width, height=image_height)
         except Exception as e:
             logger.debug('--crop_image--' + str(e))
             return False
+
+    try:
+        image_collection.update_one({'_id': id}, {'$set': {'regions': regions, 'status': 'cropped'}})
+    except Exception as e:
+        logger.debug('--crop_image--' + str(e))
+        return False
     return True
 
 

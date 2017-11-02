@@ -9,6 +9,7 @@ import random
 import numpy as np
 from PIL import Image, ImageDraw
 
+from config.common_config import logger
 from config.image_config import min_num_of_chars
 from config.image_config import max_num_of_chars
 from config.image_config import image_width
@@ -65,6 +66,7 @@ def crop(src_filename, dst_filename, pt1, pt2):
     src_image = cv2.imread(src_filename)
     x1, y1 = pt1.get('x'), pt1.get('y')
     x2, y2 = pt2.get('x'), pt2.get('y')
+    logger.debug('--x1:%s, y1:%s, x2:%s, y2:%s--', str(x1), str(y1), str(x2), str(y2))
     dst_image = src_image[y1:y2, x1:x2]  # [row_start:row_end, col_start:col:end]
     cv2.imwrite(dst_filename, dst_image)
 

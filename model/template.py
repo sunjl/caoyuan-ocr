@@ -140,9 +140,10 @@ def update_template(data):
             obj = convert_template_from_json(data)
             id = obj.get('_id')
             logger.debug('--id--' + str(id))
-            del obj['_id']
-            template_collection.update_one({'_id': id}, {'$set': obj})
-            result = get_template(id)
+            if exist_template(id):
+                del obj['_id']
+                template_collection.update_one({'_id': id}, {'$set': obj})
+                result = get_template(id)
         except Exception as e:
             logger.debug('--update_template--' + str(e))
     return result
@@ -150,9 +151,7 @@ def update_template(data):
 
 def delete_template(id):
     result = None
-    if not exist_template(id):
-        result = False
-    else:
+    if exist_template(id):
         try:
             template_collection.delete_one({'_id': id})
             if not exist_template(id):

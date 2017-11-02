@@ -147,25 +147,12 @@ def update_image(data):
             obj = convert_image_from_json(data)
             id = obj.get('_id')
             logger.debug('--id--' + str(id))
-            del obj['_id']
-            image_collection.update_one({'_id': id}, {'$set': obj})
-            result = get_image(id)
+            if exist_image(id):
+                del obj['_id']
+                image_collection.update_one({'_id': id}, {'$set': obj})
+                result = get_image(id)
         except Exception as e:
             logger.debug('--update_image--' + str(e))
-    return result
-
-
-def delete_image(id):
-    result = None
-    if not exist_image(id):
-        result = False
-    else:
-        try:
-            image_collection.delete_one({'_id': id})
-            if not exist_image(id):
-                result = True
-        except Exception as e:
-            logger.debug('--delete_image--' + str(e))
     return result
 
 
@@ -192,6 +179,12 @@ def crop_image(id):
     if not regions:
         return False
 
+    try:
+        image_collection.update_one({'_id': id}, {'$set': {'regions': regions}})
+    except Exception as e:
+        logger.debug('--crop_image--' + str(e))
+        return False
+
     path = os.path.join(image_dir, str(id))
     if not os.path.exists(path):
         os.makedirs(path)
@@ -203,10 +196,26 @@ def crop_image(id):
     f.close()
 
     for region in regions:
-        region_name = region.get('name') + '.' + extension
-        dst_filename = os.path.join(path, region_name)
-        pt1 = region.get('pt1')
-        pt2 = region.get('pt2')
-        logger.debug('--dst_filename--' + dst_filename)
-        crop(src_filename, dst_filename, pt1, pt2)
+        try:
+            region_name = region.get('name') + '.' + extension
+            dst_filename = os.path.join(path, region_name)
+            pt1 = region.get('pt1')
+            pt2 = region.get('pt2')
+            logger.debug('--dst_filename--' + dst_filename)
+            crop(src_filename, dst_filename, pt1, pt2)
+        except Exception as e:
+            logger.debug('--crop_image--' + str(e))
+            return False
     return True
+
+
+def delete_image(id):
+    result = None
+    if exist_image(id):
+        try:
+            image_collection.delete_one({'_id': id})
+            if not exist_image(id):
+                result = True
+        except Exception as e:
+            logger.debug('--delete_image--' + str(e))
+    return result

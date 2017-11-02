@@ -101,6 +101,6 @@ def crop():
 
     result = crop_image(ObjectId(id))
     if result:
-        return Response(status=201)
+        return Response(status=200)
     else:
         return Response(status=404)

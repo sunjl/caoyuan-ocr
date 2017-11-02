@@ -6,14 +6,7 @@ curl -v 'http://localhost:5000/image/create' \
       "user_id": "59f7e576b2c79a43548402e0",
       "kind": "train",
       "name": "名称",
-      "template_id": "59f84711b2c79a6ed6b6d3c6",
-      "regions": [
-        {
-          "name": "区域01",
-          "pt1": {"x": 100, "y": 50}, 
-          "pt2": {"x": 200, "y": 100}
-        }
-      ],
+      "template_id": "59f84711b2c79a6ed6b6d3c6"
       "storage_id": "59f6b2ebb2c79a6c3a969331",
       "filename": "测试.png"
     }'
@@ -38,10 +31,10 @@ curl -v 'http://localhost:5000/image/update' \
       "regions": [
         {
           "name": "区域01",
-          "pt1": {"x": 100, "y": 50}, 
-          "pt2": {"x": 200, "y": 100},
-          "regconition": "ABC",
-          "validation": "A80"
+          "pt1": {"x": 20, "y": 10}, 
+          "pt2": {"x": 50, "y": 30}
+          "regconition": "A80",
+          "validation": "ABC"
         }
       ],
       "status": "validated"

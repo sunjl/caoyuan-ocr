@@ -9,8 +9,12 @@ from bson.objectid import ObjectId
 
 from config.common_config import image_dir
 from config.common_config import logger
+from config.image_config import image_width
+from config.image_config import image_height
 from util.mongo_util import get_db
 from util.image_util import crop
+from util.image_util import resize
+from util.image_util import draw_rectangle
 from model.storage import read_gridfs
 from model.template import get_template
 
@@ -156,7 +160,19 @@ def update_image(data):
     return result
 
 
-def crop_image(id):
+def delete_image(id):
+    result = None
+    if exist_image(id):
+        try:
+            image_collection.delete_one({'_id': id})
+            if not exist_image(id):
+                result = True
+        except Exception as e:
+            logger.debug('--delete_image--' + str(e))
+    return result
+
+
+def crop_image_regions(id):
     image = get_image(id)
     if not image:
         return False
@@ -199,24 +215,86 @@ def crop_image(id):
             logger.debug('--dst_filename--' + dst_filename)
             crop(src_filename, dst_filename, pt1, pt2)
         except Exception as e:
-            logger.debug('--crop_image--' + str(e))
+            logger.debug('--crop_image_regions--' + str(e))
             return False
 
     try:
-        image_collection.update_one({'_id': id}, {'$set': {'regions': regions, 'status': 'cropped'}})
+        image_collection.update_one(
+            {'_id': id},
+            {'$set': {'filename': filename, 'regions': regions, 'status': 'crop'}}
+        )
     except Exception as e:
-        logger.debug('--crop_image--' + str(e))
+        logger.debug('--crop_image_regions--' + str(e))
         return False
     return True
 
 
-def delete_image(id):
-    result = None
-    if exist_image(id):
+def resize_image_regions(id):
+    image = get_image(id)
+    if not image:
+        return False
+
+    filename = image.get('filename')
+    extension = filename.split('.')[-1]
+
+    path = os.path.join(image_dir, str(id))
+
+    regions = image.get('regions')
+    if not regions:
+        return False
+
+    for region in regions:
+        logger.debug('--region--' + str(region))
         try:
-            image_collection.delete_one({'_id': id})
-            if not exist_image(id):
-                result = True
+            region_name = region.get('name') + '.' + extension
+            src_filename = os.path.join(path, region_name)
+            logger.debug('--src_filename--' + src_filename)
+            resize(src_filename, src_filename, image_width, image_height)
         except Exception as e:
-            logger.debug('--delete_image--' + str(e))
-    return result
+            logger.debug('--resize_image_regions--' + str(e))
+            return False
+
+    try:
+        image_collection.update_one(
+            {'_id': id},
+            {'$set': {'status': 'resize'}}
+        )
+    except Exception as e:
+        logger.debug('--resize_image_regions--' + str(e))
+        return False
+    return True
+
+
+def draw_image_regions(id):
+    image = get_image(id)
+    if not image:
+        return False
+
+    filename = image.get('filename')
+
+    path = os.path.join(image_dir, str(id))
+    src_filename = os.path.join(path, filename)
+
+    regions = image.get('regions')
+    if not regions:
+        return False
+
+    for region in regions:
+        logger.debug('--region--' + str(region))
+        try:
+            pt1 = region.get('pt1')
+            pt2 = region.get('pt2')
+            draw_rectangle(src_filename, src_filename, pt1, pt2)
+        except Exception as e:
+            logger.debug('--draw_image_regions--' + str(e))
+            return False
+
+    try:
+        image_collection.update_one(
+            {'_id': id},
+            {'$set': {'status': 'draw'}}
+        )
+    except Exception as e:
+        logger.debug('--draw_image_regions--' + str(e))
+        return False
+    return True

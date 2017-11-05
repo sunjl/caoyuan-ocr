@@ -4,7 +4,6 @@ import os
 
 sys.path.append(os.path.realpath('..'))
 
-import argparse
 import shutil
 
 import cv2
@@ -174,21 +173,3 @@ def evaluate():
         img = cv2.imread(image_path)
         y_pred = model.predict(img[None, ...])
         decode_prediction(y_pred)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('task')
-    parser.add_argument('-i', '--input', required=False)
-    args = parser.parse_args()
-    task = args.task
-    if task == 'train':
-        train()
-    elif task == 'gen_test_data':
-        gen_test_data()
-    elif task == 'evaluate':
-        evaluate()
-
-
-if __name__ == "__main__":
-    main()

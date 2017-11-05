@@ -2,7 +2,7 @@ import sys
 
 import os
 
-sys.path.append(os.path.realpath('..'))
+sys.path.append(os.path.realpath('.'))
 
 from flask import Flask
 

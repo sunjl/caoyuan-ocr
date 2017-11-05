@@ -23,15 +23,14 @@ sudo pip3 install -r requirements.txt
 Execute tasks:
 
 ```sh
-cd ocr
-python3 gen_ocr.py train
-python3 gen_ocr.py gen_test_data
-python3 gen_ocr.py evaluate
+python3 ocr.py train
+python3 ocr.py gen_test_data
+python3 ocr.py evaluate
 ```
 
 Start server:
 ```sh
-FLASK_APP=main.py flask run
+FLASK_APP=app.py flask run
 ```
 
 Todo:

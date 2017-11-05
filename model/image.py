@@ -172,7 +172,7 @@ def delete_image(id):
     return result
 
 
-def crop_image_regions(id):
+def init_image_regions(id):
     image = get_image(id)
     if not image:
         return False
@@ -183,7 +183,6 @@ def crop_image_regions(id):
         return False
 
     filename = file.filename
-    extension = filename.split('.')[-1]
     bytes = file.read()
 
     template_id = image.get('template_id')
@@ -205,14 +204,40 @@ def crop_image_regions(id):
     f.write(bytes)
     f.close()
 
+    try:
+        image_collection.update_one(
+            {'_id': id},
+            {'$set': {'filename': filename, 'regions': regions, 'status': 'init'}}
+        )
+    except Exception as e:
+        logger.debug('--init_image_regions--' + str(e))
+        return False
+    return True
+
+
+def crop_image_regions(id):
+    image = get_image(id)
+    if not image:
+        return False
+
+    filename = image.get('filename')
+    extension = filename.split('.')[-1]
+
+    path = os.path.join(image_dir, str(id))
+    src_filename = os.path.join(path, filename)
+
+    regions = image.get('regions')
+    if not regions:
+        return False
+
     for region in regions:
         logger.debug('--region--' + str(region))
         try:
             region_name = region.get('name') + '.' + extension
             dst_filename = os.path.join(path, region_name)
+            logger.debug('--dst_filename--' + dst_filename)
             pt1 = region.get('pt1')
             pt2 = region.get('pt2')
-            logger.debug('--dst_filename--' + dst_filename)
             crop(src_filename, dst_filename, pt1, pt2)
         except Exception as e:
             logger.debug('--crop_image_regions--' + str(e))
@@ -221,7 +246,7 @@ def crop_image_regions(id):
     try:
         image_collection.update_one(
             {'_id': id},
-            {'$set': {'filename': filename, 'regions': regions, 'status': 'crop'}}
+            {'$set': {'status': 'crop'}}
         )
     except Exception as e:
         logger.debug('--crop_image_regions--' + str(e))

@@ -20,10 +20,10 @@ storage_app = Blueprint('storage_controller', __name__)
 
 @storage_app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['file']
-    if not file:
+    if 'file' not in request.files:
         return Response(status=400)
 
+    file = request.files['file']
     obj = store_gridfs(file)
     if not obj:
         return Response(status=500)

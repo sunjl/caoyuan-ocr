@@ -81,11 +81,22 @@ def convert_template_from_mongo(result):
     return obj
 
 
+def convert_template_list_from_mongo(results):
+    objs = []
+    if results:
+        for result in results:
+            obj = convert_template_from_mongo(result)
+            objs.append(obj)
+    logger.debug('--objs--' + str(objs))
+    return objs
+
+
 def create_template(data):
     result = None
     if data:
         try:
             obj = convert_template_from_json(data)
+            obj['status'] = 'create'
             insert_result = template_collection.insert_one(obj)
             id = insert_result.inserted_id
             logger.debug('--id--' + str(id))
@@ -105,13 +116,30 @@ def get_template(id):
     return result
 
 
-# templates = template_collection.find({'status': 'waiting'})
+def list_template(filter, page_request):
+    offset = page_request.offset
+    sort = page_request.sort
+    size = page_request.size
+    result = None
+    cursor = template_collection.find(filter)
+    try:
+        if offset:
+            cursor.skip(offset)
+        if sort:
+            cursor.sort(sort)
+        if size:
+            cursor.limit(size)
+        result = list(cursor)
+        logger.debug('--list_template--' + dumps(result))
+    except Exception as e:
+        logger.debug('--list_template--' + str(e))
+    return result
 
 
-def count_template(id):
+def count_template(filter):
     count = None
     try:
-        count = template_collection.count({'_id': id})
+        count = template_collection.count(filter)
         logger.debug('--count_template--' + dumps(count))
     except Exception as e:
         logger.debug('--count_template--' + str(e))

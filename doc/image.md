@@ -34,13 +34,20 @@ curl -v 'http://localhost:5000/image/update' \
           "pt1": {"x": 20, "y": 10}, 
           "pt2": {"x": 50, "y": 30}
           "regconition": "A80",
-          "validation": "ABC"
+          "correction": "ABC"
         }
       ],
       "status": "validated"
     }'
 
 curl -v 'http://localhost:5000/image/delete' \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --data '{
+        "id": "59f935f6b2c79a6da6610f3c"
+    }'
+
+curl -v 'http://localhost:5000/image/init_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{
@@ -55,6 +62,13 @@ curl -v 'http://localhost:5000/image/crop_regions' \
     }'
 
 curl -v 'http://localhost:5000/image/resize_regions' \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --data '{
+        "id": "59f935f6b2c79a6da6610f3c"
+    }'
+
+curl -v 'http://localhost:5000/image/draw_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{

@@ -13,6 +13,7 @@ from model.image import create_image
 from model.image import get_image
 from model.image import update_image
 from model.image import delete_image
+from model.image import init_image_regions
 from model.image import crop_image_regions
 from model.image import resize_image_regions
 from model.image import draw_image_regions
@@ -91,6 +92,21 @@ def delete():
         return Response(status=204)
     else:
         return Response(status=202)
+
+
+@image_app.route('/init_regions', methods=['POST'])
+def init_regions():
+    request_data = request.json
+    logger.debug('--request_data--' + str(request_data))
+    id = request_data.get('id')
+    if not (id and ObjectId.is_valid(id)):
+        return Response(status=400)
+
+    result = init_image_regions(ObjectId(id))
+    if result:
+        return Response(status=200)
+    else:
+        return Response(status=404)
 
 
 @image_app.route('/crop_regions', methods=['POST'])

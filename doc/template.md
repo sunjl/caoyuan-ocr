@@ -26,7 +26,11 @@ curl -v -G 'http://localhost:5000/template/exist' \
 
 curl -v -G 'http://localhost:5000/template/count'
 
-curl -v -G 'http://localhost:5000/template/list'
+curl -v -G 'http://localhost:5000/template/list' \
+  --data-urlencode 'page=0' \
+  --data-urlencode 'size=2' \
+  --data-urlencode 'order=create_date' \
+  --data-urlencode 'direction=asc'
 
 curl -v 'http://localhost:5000/template/update' \
   --request POST \

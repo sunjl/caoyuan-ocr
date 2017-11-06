@@ -1,6 +1,6 @@
 import string
 
-font_dir = '../font'
+font_dir = 'font'
 chs_font = 'chs'
 en_font = 'en'
 font_max_size = 48

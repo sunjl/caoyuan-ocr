@@ -10,7 +10,8 @@ curl -v 'http://localhost:5000/template/create' \
         {
           "name": "区域01",
           "pt1": {"x": 20, "y": 10}, 
-          "pt2": {"x": 50, "y": 30}
+          "pt2": {"x": 50, "y": 30},
+          "correction": "ABC"
         }
       ],
       "storage_id": "59f6b2ebb2c79a6c3a969331",

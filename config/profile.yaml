@@ -7,3 +7,5 @@ mongo:
 
 upload_dir : '/tmp/caoyuan_ocr/upload'
 image_dir : '/tmp/caoyuan_ocr/image'
+train_dir: '/tmp/caoyuan_ocr/train'
+evaluate_dir: '/tmp/caoyuan_ocr/evaluate'

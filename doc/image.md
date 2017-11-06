@@ -4,7 +4,7 @@ curl -v 'http://localhost:5000/image/create' \
   --header "Content-Type: application/json" \
   --data '{
       "user_id": "59f7e576b2c79a43548402e0",
-      "kind": "train",
+      "kind": "evaluate",
       "name": "名称",
       "template_id": "59f84711b2c79a6ed6b6d3c6"
       "storage_id": "59f6b2ebb2c79a6c3a969331",

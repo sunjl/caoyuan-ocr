@@ -6,7 +6,7 @@ curl -v 'http://localhost:5000/image/create' \
       "user_id": "59f7e576b2c79a43548402e0",
       "kind": "evaluate",
       "name": "名称",
-      "template_id": "59f84711b2c79a6ed6b6d3c6"
+      "template_id": "59f84711b2c79a6ed6b6d3c6",
       "storage_id": "59f6b2ebb2c79a6c3a969331",
       "filename": "测试.png"
     }'
@@ -32,7 +32,7 @@ curl -v 'http://localhost:5000/image/update' \
         {
           "name": "区域01",
           "pt1": {"x": 20, "y": 10}, 
-          "pt2": {"x": 50, "y": 30}
+          "pt2": {"x": 50, "y": 30},
           "regconition": "A80",
           "correction": "ABC"
         }

@@ -13,7 +13,6 @@ from config.image_config import image_width
 from config.image_config import image_height
 from util.mongo_util import get_db
 from util.image_util import crop
-from util.image_util import mask
 from util.image_util import resize
 from util.image_util import draw_rectangle
 from model.storage import read_gridfs
@@ -178,6 +177,10 @@ def update_image_regions(id):
     if not image:
         return False
 
+    kind = image.get('kind')
+    if not kind:
+        return False
+
     storage_id = image.get('storage_id')
     file = read_gridfs(storage_id)
     if not file:
@@ -195,7 +198,7 @@ def update_image_regions(id):
     if not regions:
         return False
 
-    path = os.path.join(image_dir, str(id))
+    path = os.path.join(image_dir, kind, str(id))
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -221,11 +224,16 @@ def crop_image_regions(id):
     if not image:
         return False
 
+    kind = image.get('kind')
     filename = image.get('filename')
     extension = filename.split('.')[-1]
 
-    path = os.path.join(image_dir, str(id))
+    path = os.path.join(image_dir, kind, str(id))
     src_filename = os.path.join(path, filename)
+
+    regions_path = os.path.join(path, 'regions')
+    if not os.path.exists(regions_path):
+        os.makedirs(regions_path)
 
     regions = image.get('regions')
     if not regions:
@@ -235,7 +243,7 @@ def crop_image_regions(id):
         logger.debug('--region--' + str(region))
         try:
             region_name = region.get('name') + '.' + extension
-            dst_filename = os.path.join(path, region_name)
+            dst_filename = os.path.join(regions_path, region_name)
             logger.debug('--dst_filename--' + dst_filename)
             pt1 = region.get('pt1')
             pt2 = region.get('pt2')
@@ -255,51 +263,16 @@ def crop_image_regions(id):
     return True
 
 
-def mask_image_regions(id):
-    image = get_image(id)
-    if not image:
-        return False
-
-    filename = image.get('filename')
-    extension = filename.split('.')[-1]
-
-    path = os.path.join(image_dir, str(id))
-
-    regions = image.get('regions')
-    if not regions:
-        return False
-
-    for region in regions:
-        logger.debug('--region--' + str(region))
-        try:
-            region_name = region.get('name') + '.' + extension
-            src_filename = os.path.join(path, region_name)
-            logger.debug('--src_filename--' + src_filename)
-            mask(src_filename, src_filename)
-        except Exception as e:
-            logger.debug('--mask_image_regions--' + str(e))
-            return False
-
-    try:
-        image_collection.update_one(
-            {'_id': id},
-            {'$set': {'status': 'mask'}}
-        )
-    except Exception as e:
-        logger.debug('--mask_image_regions--' + str(e))
-        return False
-    return True
-
-
 def resize_image_regions(id):
     image = get_image(id)
     if not image:
         return False
 
+    kind = image.get('kind')
     filename = image.get('filename')
     extension = filename.split('.')[-1]
 
-    path = os.path.join(image_dir, str(id))
+    path = os.path.join(image_dir, kind, str(id), 'regions')
 
     regions = image.get('regions')
     if not regions:
@@ -332,9 +305,10 @@ def draw_image_regions(id):
     if not image:
         return False
 
+    kind = image.get('kind')
     filename = image.get('filename')
 
-    path = os.path.join(image_dir, str(id))
+    path = os.path.join(image_dir, kind, str(id))
     src_filename = os.path.join(path, filename)
 
     regions = image.get('regions')

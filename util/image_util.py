@@ -68,24 +68,9 @@ def crop(src_filename, dst_filename, pt1, pt2):
     x1, y1 = pt1.get('x'), pt1.get('y')
     x2, y2 = pt2.get('x'), pt2.get('y')
     logger.debug('--x1:%s, y1:%s, x2:%s, y2:%s--', str(x1), str(y1), str(x2), str(y2))
-    dst_image = src_image[y1:y2, x1:x2]  # [row_start:row_end, col_start:col:end]
-    logger.debug('--dst_image.shape--' + str(dst_image.shape))
-    cv2.imwrite(dst_filename, dst_image)
-
-
-def mask(src_filename, dst_filename):
-    src_image = cv2.imread(src_filename)
-    height, width = src_image.shape[:2]
-
-    inverted_image = 255 - src_image
-    mask = np.zeros(inverted_image.shape[:2], np.uint8)
-    rect = (1, 1, width - 1, height - 1)
-    bgdModel = np.zeros((1, 65), np.float64)
-    fgdModel = np.zeros((1, 65), np.float64)
-
-    cv2.grabCut(inverted_image, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
-    mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
-    dst_image = inverted_image * mask[:, :, np.newaxis]
+    crop_image = src_image[y1:y2, x1:x2]  # [row_start:row_end, col_start:col:end]
+    logger.debug('--dst_image.shape--' + str(crop_image.shape))
+    dst_image = cv2.bitwise_not(crop_image)
     cv2.imwrite(dst_filename, dst_image)
 
 

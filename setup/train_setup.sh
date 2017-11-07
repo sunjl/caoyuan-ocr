@@ -1,5 +1,5 @@
 curl -v -X POST 'http://localhost:5000/storage/upload' \
-  -F "file=@../data/train/train_template.png"
+  -F "file=@../data/template/train/train_template.png"
 
 python3 train_template.py
 
@@ -9,7 +9,7 @@ curl -v 'http://localhost:5000/template/create' \
   --data-binary @train_template.json
 
 curl -v -X POST 'http://localhost:5000/storage/upload' \
-  -F "file=@../data/train/train_image_01.png"
+  -F "file=@../data/image/train/train_image_01.png"
 
 curl -v 'http://localhost:5000/image/create' \
   --request POST \

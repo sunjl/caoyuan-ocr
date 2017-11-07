@@ -13,6 +13,7 @@ from config.image_config import image_width
 from config.image_config import image_height
 from util.mongo_util import get_db
 from util.image_util import crop
+from util.image_util import mask
 from util.image_util import resize
 from util.image_util import draw_rectangle
 from model.storage import read_gridfs
@@ -172,7 +173,7 @@ def delete_image(id):
     return result
 
 
-def init_image_regions(id):
+def update_image_regions(id):
     image = get_image(id)
     if not image:
         return False
@@ -210,7 +211,7 @@ def init_image_regions(id):
             {'$set': {'filename': filename, 'regions': regions, 'status': 'init'}}
         )
     except Exception as e:
-        logger.debug('--init_image_regions--' + str(e))
+        logger.debug('--update_image_regions--' + str(e))
         return False
     return True
 
@@ -250,6 +251,42 @@ def crop_image_regions(id):
         )
     except Exception as e:
         logger.debug('--crop_image_regions--' + str(e))
+        return False
+    return True
+
+
+def mask_image_regions(id):
+    image = get_image(id)
+    if not image:
+        return False
+
+    filename = image.get('filename')
+    extension = filename.split('.')[-1]
+
+    path = os.path.join(image_dir, str(id))
+
+    regions = image.get('regions')
+    if not regions:
+        return False
+
+    for region in regions:
+        logger.debug('--region--' + str(region))
+        try:
+            region_name = region.get('name') + '.' + extension
+            src_filename = os.path.join(path, region_name)
+            logger.debug('--src_filename--' + src_filename)
+            mask(src_filename, src_filename)
+        except Exception as e:
+            logger.debug('--mask_image_regions--' + str(e))
+            return False
+
+    try:
+        image_collection.update_one(
+            {'_id': id},
+            {'$set': {'status': 'mask'}}
+        )
+    except Exception as e:
+        logger.debug('--mask_image_regions--' + str(e))
         return False
     return True
 

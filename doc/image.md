@@ -47,7 +47,7 @@ curl -v 'http://localhost:5000/image/delete' \
         "id": "59f935f6b2c79a6da6610f3c"
     }'
 
-curl -v 'http://localhost:5000/image/init_regions' \
+curl -v 'http://localhost:5000/image/update_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{
@@ -55,6 +55,13 @@ curl -v 'http://localhost:5000/image/init_regions' \
     }'
 
 curl -v 'http://localhost:5000/image/crop_regions' \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --data '{
+        "id": "59f935f6b2c79a6da6610f3c"
+    }'
+
+curl -v 'http://localhost:5000/image/mask_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{

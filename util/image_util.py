@@ -73,6 +73,22 @@ def crop(src_filename, dst_filename, pt1, pt2):
     cv2.imwrite(dst_filename, dst_image)
 
 
+def mask(src_filename, dst_filename):
+    src_image = cv2.imread(src_filename)
+    height, width = src_image.shape[:2]
+
+    inverted_image = 255 - src_image
+    mask = np.zeros(inverted_image.shape[:2], np.uint8)
+    rect = (1, 1, width - 1, height - 1)
+    bgdModel = np.zeros((1, 65), np.float64)
+    fgdModel = np.zeros((1, 65), np.float64)
+
+    cv2.grabCut(inverted_image, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
+    mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+    dst_image = inverted_image * mask[:, :, np.newaxis]
+    cv2.imwrite(dst_filename, dst_image)
+
+
 def resize(src_filename, dst_filename, width=image_width, height=image_height):
     src_image = cv2.imread(src_filename)
     dst_image = cv2.resize(src_image, (width, height), interpolation=cv2.INTER_CUBIC)

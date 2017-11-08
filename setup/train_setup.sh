@@ -37,6 +37,13 @@ curl -v 'http://localhost:5000/image/crop_regions' \
         "id": "5a002ae8b2c79a280e9c1949"
     }'
 
+curl -v 'http://localhost:5000/image/morphology_regions' \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --data '{
+        "id": "5a002ae8b2c79a280e9c1949"
+    }'
+
 curl -v 'http://localhost:5000/image/draw_regions' \
   --request POST \
   --header "Content-Type: application/json" \

@@ -24,3 +24,4 @@ line_thickness = 1
 
 train_kind = 'train'
 evaluate_kind = 'evaluate'
+regions = 'regions'

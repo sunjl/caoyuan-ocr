@@ -8,6 +8,7 @@ import cv2
 import random
 import numpy as np
 from PIL import Image, ImageDraw
+import subprocess
 
 from config.common_config import logger
 from config.image_config import min_num_of_chars
@@ -69,9 +70,18 @@ def crop(src_filename, dst_filename, pt1, pt2):
     x2, y2 = pt2.get('x'), pt2.get('y')
     logger.debug('--x1:%s, y1:%s, x2:%s, y2:%s--', str(x1), str(y1), str(x2), str(y2))
     crop_image = src_image[y1:y2, x1:x2]  # [row_start:row_end, col_start:col:end]
-    logger.debug('--dst_image.shape--' + str(crop_image.shape))
-    dst_image = cv2.bitwise_not(crop_image)
-    cv2.imwrite(dst_filename, dst_image)
+    logger.debug('--crop_image.shape--' + str(crop_image.shape))
+    cv2.imwrite(dst_filename, crop_image)
+
+
+def morphology(src_filename, dst_filename):
+    cmd = "convert " + src_filename + " -negate" \
+          + " -define morphology:compose=darken" \
+          + " -morphology Thinning 'Rectangle:1x40+0+0<' " \
+          + dst_filename
+    # cmd = ["convert", src_filename, "-negate", "-define", "morphology:compose=darken",
+    #        "-morphology", "Thinning", "'Rectangle:1x40+0+0<'", dst_filename]
+    subprocess.call(cmd, shell=True)
 
 
 def resize(src_filename, dst_filename, width=image_width, height=image_height):

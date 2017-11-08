@@ -14,5 +14,5 @@ patience = 10
 output_dir = 'output'
 model_h5_name = 'model.h5'
 model_plot_name = 'model.png'
-test_data_dir = 'data/test'
+test_data_dir = '/tmp/test_data'
 test_data_size = 10

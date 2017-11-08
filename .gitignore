@@ -1,5 +1,6 @@
 output/
 python-env/
+temp/
 .idea/
 *.DS_Store
 *.py[cod]

@@ -23,7 +23,7 @@ curl -v 'http://localhost:5000/image/create' \
       "filename": "train_image_01.png"
     }'
 
-curl -v 'http://localhost:5000/image/update_regions' \
+curl -v 'http://localhost:5000/image/prepare_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{
@@ -37,7 +37,7 @@ curl -v 'http://localhost:5000/image/crop_regions' \
         "id": "5a002ae8b2c79a280e9c1949"
     }'
 
-curl -v 'http://localhost:5000/image/morphology_regions' \
+curl -v 'http://localhost:5000/image/trim_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{

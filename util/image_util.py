@@ -43,7 +43,7 @@ def gen_image():
     else:
         width_offset = 0
 
-    image = Image.new("RGB", (image_width, image_height), black_color)
+    image = Image.new('RGB', (image_width, image_height), black_color)
     draw = ImageDraw.Draw(image)
 
     for char in chars:
@@ -74,14 +74,12 @@ def crop(src_filename, dst_filename, pt1, pt2):
     cv2.imwrite(dst_filename, crop_image)
 
 
-def morphology(src_filename, dst_filename):
-    cmd = "convert " + src_filename + " -negate" \
-          + " -define morphology:compose=darken" \
-          + " -morphology Thinning 'Rectangle:1x40+0+0<' " \
-          + dst_filename
-    # cmd = ["convert", src_filename, "-negate", "-define", "morphology:compose=darken",
-    #        "-morphology", "Thinning", "'Rectangle:1x40+0+0<'", dst_filename]
-    subprocess.call(cmd, shell=True)
+def trim(src_filename, dst_filename):
+    morphology_cmd = ['convert', src_filename, '-negate', '-define', 'morphology:compose=darken',
+                      '-morphology', 'Thinning', 'Rectangle:1x40+0+0<', src_filename]
+    subprocess.run(morphology_cmd)
+    trim_cmd = ['convert', src_filename, '-fuzz', '10%', '-trim', '+repage', dst_filename]
+    subprocess.run(trim_cmd)
 
 
 def resize(src_filename, dst_filename, width=image_width, height=image_height):

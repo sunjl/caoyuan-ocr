@@ -13,10 +13,9 @@ from model.image import create_image
 from model.image import get_image
 from model.image import update_image
 from model.image import delete_image
-from model.image import update_image_regions
+from model.image import prepare_image_regions
 from model.image import crop_image_regions
-from model.image import morphology_image_regions
-from model.image import resize_image_regions
+from model.image import trim_image_regions
 from model.image import draw_image_regions
 from model.image import convert_image_from_mongo
 
@@ -95,15 +94,15 @@ def delete():
         return Response(status=202)
 
 
-@image_app.route('/update_regions', methods=['POST'])
-def update_regions():
+@image_app.route('/prepare_regions', methods=['POST'])
+def prepare_regions():
     request_data = request.json
     logger.debug('--request_data--' + str(request_data))
     id = request_data.get('id')
     if not (id and ObjectId.is_valid(id)):
         return Response(status=400)
 
-    result = update_image_regions(ObjectId(id))
+    result = prepare_image_regions(ObjectId(id))
     if result:
         return Response(status=200)
     else:
@@ -125,30 +124,15 @@ def crop_regions():
         return Response(status=404)
 
 
-@image_app.route('/morphology_regions', methods=['POST'])
-def morphology_regions():
+@image_app.route('/trim_regions', methods=['POST'])
+def trim_regions():
     request_data = request.json
     logger.debug('--request_data--' + str(request_data))
     id = request_data.get('id')
     if not (id and ObjectId.is_valid(id)):
         return Response(status=400)
 
-    result = morphology_image_regions(ObjectId(id))
-    if result:
-        return Response(status=200)
-    else:
-        return Response(status=404)
-
-
-@image_app.route('/resize_regions', methods=['POST'])
-def resize_regions():
-    request_data = request.json
-    logger.debug('--request_data--' + str(request_data))
-    id = request_data.get('id')
-    if not (id and ObjectId.is_valid(id)):
-        return Response(status=400)
-
-    result = resize_image_regions(ObjectId(id))
+    result = trim_image_regions(ObjectId(id))
     if result:
         return Response(status=200)
     else:

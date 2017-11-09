@@ -47,7 +47,7 @@ curl -v 'http://localhost:5000/image/delete' \
         "id": "59f935f6b2c79a6da6610f3c"
     }'
 
-curl -v 'http://localhost:5000/image/update_regions' \
+curl -v 'http://localhost:5000/image/prepare_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{
@@ -61,14 +61,7 @@ curl -v 'http://localhost:5000/image/crop_regions' \
         "id": "59f935f6b2c79a6da6610f3c"
     }'
 
-curl -v 'http://localhost:5000/image/morphology_regions' \
-  --request POST \
-  --header "Content-Type: application/json" \
-  --data '{
-        "id": "59f935f6b2c79a6da6610f3c"
-    }'
-
-curl -v 'http://localhost:5000/image/resize_regions' \
+curl -v 'http://localhost:5000/image/trim_regions' \
   --request POST \
   --header "Content-Type: application/json" \
   --data '{

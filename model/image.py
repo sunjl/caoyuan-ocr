@@ -9,12 +9,9 @@ from bson.objectid import ObjectId
 
 from config.common_config import image_dir
 from config.common_config import logger
-from config.image_config import image_width
-from config.image_config import image_height
 from util.mongo_util import get_db
 from util.image_util import crop
-from util.image_util import morphology
-from util.image_util import resize
+from util.image_util import trim
 from util.image_util import draw_rectangle
 from model.storage import read_gridfs
 from model.template import get_template
@@ -173,7 +170,7 @@ def delete_image(id):
     return result
 
 
-def update_image_regions(id):
+def prepare_image_regions(id):
     image = get_image(id)
     if not image:
         return False
@@ -212,10 +209,10 @@ def update_image_regions(id):
     try:
         image_collection.update_one(
             {'_id': id},
-            {'$set': {'filename': filename, 'regions': regions, 'status': 'update'}}
+            {'$set': {'filename': filename, 'regions': regions, 'status': 'prepare'}}
         )
     except Exception as e:
-        logger.debug('--update_image_regions--' + str(e))
+        logger.debug('--prepare_image_regions--' + str(e))
         return False
     return True
 
@@ -264,7 +261,7 @@ def crop_image_regions(id):
     return True
 
 
-def morphology_image_regions(id):
+def trim_image_regions(id):
     image = get_image(id)
     if not image:
         return False
@@ -285,46 +282,9 @@ def morphology_image_regions(id):
             region_name = region.get('name') + '.' + extension
             src_filename = os.path.join(path, region_name)
             logger.debug('--src_filename--' + src_filename)
-            morphology(src_filename, src_filename)
+            trim(src_filename, src_filename)
         except Exception as e:
             logger.debug('--morphology_image_regions--' + str(e))
-            return False
-
-    try:
-        image_collection.update_one(
-            {'_id': id},
-            {'$set': {'status': 'resize'}}
-        )
-    except Exception as e:
-        logger.debug('--resize_image_regions--' + str(e))
-        return False
-    return True
-
-
-def resize_image_regions(id):
-    image = get_image(id)
-    if not image:
-        return False
-
-    kind = image.get('kind')
-    filename = image.get('filename')
-    extension = filename.split('.')[-1]
-
-    path = os.path.join(image_dir, kind, str(id), 'regions')
-
-    regions = image.get('regions')
-    if not regions:
-        return False
-
-    for region in regions:
-        logger.debug('--region--' + str(region))
-        try:
-            region_name = region.get('name') + '.' + extension
-            src_filename = os.path.join(path, region_name)
-            logger.debug('--src_filename--' + src_filename)
-            resize(src_filename, src_filename, image_width, image_height)
-        except Exception as e:
-            logger.debug('--resize_image_regions--' + str(e))
             return False
 
     try:

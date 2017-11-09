@@ -10,7 +10,7 @@ from config.image_config import digits
 from config.image_config import letters
 
 
-def gen_chars(min_size, max_size):
+def gen_font_chars(min_size, max_size):
     chars = []
     size = random.randint(min_size, max_size)
     for idx in range(0, size):

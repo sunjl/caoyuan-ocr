@@ -23,17 +23,17 @@ from config.image_config import max_num_of_chars
 from config.image_config import dict_classes
 from config.image_config import dict_chars
 
-from config.ocr_config import batch_size
-from config.ocr_config import input_shape
-from config.ocr_config import output_dir
-from config.ocr_config import model_plot_name
-from config.ocr_config import num_epoch
-from config.ocr_config import patience
-from config.ocr_config import model_h5_name
-from config.ocr_config import test_data_size
-from config.ocr_config import test_data_dir
+from config.recognition_config import batch_size
+from config.recognition_config import input_shape
+from config.recognition_config import output_dir
+from config.recognition_config import model_plot_name
+from config.recognition_config import num_epoch
+from config.recognition_config import patience
+from config.recognition_config import model_h5_name
+from config.recognition_config import test_data_size
+from config.recognition_config import test_data_dir
 
-from util.image_util import gen_image
+from util.image_util import gen_font_image
 
 
 def batch_generator(size):
@@ -42,7 +42,7 @@ def batch_generator(size):
         head1_list = []
         head2_list = []
         for i in range(size):
-            chars, image = gen_image()
+            chars, image = gen_font_image()
             chars_length = len(chars)
             head1 = np.zeros((max_num_of_chars * dict_classes), np.int32)
             head2 = np.zeros((max_num_of_chars - min_num_of_chars + 1), np.int32)
@@ -147,7 +147,7 @@ def gen_test_data(size=test_data_size):
     os.makedirs(test_data_dir)
 
     for i in range(0, size):
-        chars, img = gen_image()
+        chars, img = gen_font_image()
         name = ''.join(char for char in chars)
         cv2.imwrite(os.path.join(test_data_dir, name + '.png'), img)
 

@@ -14,7 +14,7 @@ json_filename = 'train_template.json'
 
 regions = []
 with open(dict_filename) as file:
-    for line_idx, line in enumerate(file, 1):
+    for line_idx, line in enumerate(file):
         line = line.strip()
         chars = list(line)
         for char_idx, char in enumerate(chars):
@@ -22,11 +22,11 @@ with open(dict_filename) as file:
                 'name': char,
                 'pt1': {
                     'x': x_offset + char_idx * region_width + char_idx * x_padding,
-                    'y': y_offset + (line_idx - 1) * region_height + (line_idx - 1) * y_padding
+                    'y': y_offset + line_idx * region_height + line_idx * y_padding
                 },
                 'pt2': {
                     'x': x_offset + (char_idx + 1) * region_width + char_idx * x_padding,
-                    'y': y_offset + line_idx * region_height + (line_idx - 1) * y_padding
+                    'y': y_offset + (line_idx + 1) * region_height + line_idx * y_padding
                 },
                 'correction': char
             }

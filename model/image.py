@@ -284,16 +284,16 @@ def trim_image_regions(id):
             logger.debug('--src_filename--' + src_filename)
             trim(src_filename, src_filename)
         except Exception as e:
-            logger.debug('--morphology_image_regions--' + str(e))
+            logger.debug('--trim_image_regions--' + str(e))
             return False
 
     try:
         image_collection.update_one(
             {'_id': id},
-            {'$set': {'status': 'resize'}}
+            {'$set': {'status': 'trim'}}
         )
     except Exception as e:
-        logger.debug('--resize_image_regions--' + str(e))
+        logger.debug('--trim_image_regions--' + str(e))
         return False
     return True
 

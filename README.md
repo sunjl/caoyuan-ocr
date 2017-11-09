@@ -23,9 +23,9 @@ sudo pip3 install -r requirements.txt
 Execute tasks:
 
 ```sh
-python3 ocr.py train
-python3 ocr.py gen_test_data
-python3 ocr.py evaluate
+python3 font_ocr.py train
+python3 font_ocr.py gen_test_data
+python3 font_ocr.py evaluate
 ```
 
 Start server:

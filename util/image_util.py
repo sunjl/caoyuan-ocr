@@ -15,6 +15,7 @@ from config.image_config import min_num_of_chars
 from config.image_config import max_num_of_chars
 from config.image_config import image_width
 from config.image_config import image_height
+from config.image_config import image_channels
 from config.image_config import black_color
 from config.image_config import white_color
 from config.image_config import green_color
@@ -25,11 +26,12 @@ from config.image_config import font_min_size
 
 from util.font_util import gen_random_font
 from util.font_util import get_char_sizes
-from util.string_util import gen_chars
+from util.string_util import gen_font_chars
+from util.file_util import gen_custom_files
 
 
-def gen_image():
-    chars = gen_chars(min_num_of_chars, max_num_of_chars)
+def gen_font_image():
+    chars = gen_font_chars(min_num_of_chars, max_num_of_chars)
     font = gen_random_font(en_font, font_min_size, font_max_size)
 
     char_widths, char_heights = get_char_sizes(font, chars)
@@ -60,6 +62,22 @@ def gen_image():
         offset = (width_offset, height_offset)
         draw.text(offset, char, font=font, fill=white_color)
 
+    return chars, np.array(image)
+
+
+def gen_custom_image():
+    chars = []
+    image = np.zeros((image_height, image_width, image_channels), np.uint8)
+    width_offset = 0
+    results = gen_custom_files(min_num_of_chars, max_num_of_chars)
+    for result in results:
+        char = result.get('char')
+        chars.append(char)
+        fullname = result.get('fullname')
+        char_image = cv2.imread(fullname)
+        rows, cols, channels = char_image.shape
+        width_offset += cols
+        image[0:rows, width_offset:width_offset + cols] = char_image
     return chars, np.array(image)
 
 

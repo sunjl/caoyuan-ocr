@@ -72,12 +72,14 @@ def gen_custom_image():
     results = gen_custom_files(min_num_of_chars, max_num_of_chars)
     for result in results:
         char = result.get('char')
-        chars.append(char)
         fullname = result.get('fullname')
         char_image = cv2.imread(fullname)
         rows, cols, channels = char_image.shape
         width_offset += cols
-        image[0:rows, width_offset:width_offset + cols] = char_image
+        logger.debug('--char--' + char)
+        if (rows < image_height) and (width_offset + cols < image_width):
+            chars.append(char)
+            image[0:rows, width_offset:width_offset + cols] = char_image
     return chars, np.array(image)
 
 

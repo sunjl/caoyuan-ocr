@@ -27,5 +27,5 @@ def gen_custom_files(min_size, max_size):
         fullname = os.path.join(regions_dir, filename)
         result = {'char': root, 'fullname': fullname}
         results.append(result)
-    logger.debug('--results--' + str(results))
+    # logger.debug('--results--' + str(results))
     return results

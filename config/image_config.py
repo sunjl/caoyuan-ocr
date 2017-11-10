@@ -16,7 +16,7 @@ min_num_of_chars = 1
 
 image_width = 192
 image_height = 48
-image_channels = 3
+image_channels = 1
 black_color = (0, 0, 0)
 white_color = (255, 255, 255)
 green_color = (0, 255, 0)
@@ -24,4 +24,5 @@ line_thickness = 1
 
 train_kind = 'train'
 evaluate_kind = 'evaluate'
+test_kind = 'test'
 regions = 'regions'

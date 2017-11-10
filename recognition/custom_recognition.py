@@ -121,16 +121,11 @@ def get_model():
 def train(epochs=num_epoch):
     model = get_model()
 
-    callbacks = [
-        EarlyStopping(monitor='val_loss', patience=patience, verbose=0)
-    ]
-
     history = model.fit_generator(
         generator=batch_generator(batch_size),
         steps_per_epoch=batch_size,
         epochs=epochs,
         verbose=2,
-        # callbacks=callbacks,
         validation_data=batch_generator(batch_size),
         validation_steps=batch_size)
 
@@ -170,6 +165,6 @@ def evaluate():
     for filename in sorted(os.listdir(test_data_dir)):
         image_path = os.path.join(test_data_dir, filename)
         print('image path:', filename)
-        img = cv2.imread(image_path)
-        y_pred = model.predict(img[None, ...])
+        img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        y_pred = model.predict(img[None, ..., None])
         decode_prediction(y_pred)

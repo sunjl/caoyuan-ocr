@@ -8,7 +8,7 @@ from config.image_config import image_width
 from config.image_config import image_height
 
 num_epoch = 1000
-input_shape = (image_height, image_width, 3)
+input_shape = (image_height, image_width, 1)
 batch_size = 32
 patience = 10
 output_dir = 'output'

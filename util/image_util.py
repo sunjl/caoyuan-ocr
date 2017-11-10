@@ -73,18 +73,18 @@ def gen_custom_image():
     for result in results:
         char = result.get('char')
         fullname = result.get('fullname')
-        char_image = cv2.imread(fullname)
-        rows, cols, channels = char_image.shape
+        char_image = cv2.imread(fullname, cv2.IMREAD_GRAYSCALE)
+        rows, cols = char_image.shape
         width_offset += cols
-        logger.debug('--char--' + char)
+        # logger.debug('--char--' + char)
         if (rows < image_height) and (width_offset + cols < image_width):
             chars.append(char)
-            image[0:rows, width_offset:width_offset + cols] = char_image
+            image[0:rows, width_offset:width_offset + cols, 0] = char_image
     return chars, np.array(image)
 
 
 def crop(src_filename, dst_filename, pt1, pt2):
-    src_image = cv2.imread(src_filename)
+    src_image = cv2.imread(src_filename, cv2.IMREAD_GRAYSCALE)
     logger.debug('--src_image.shape--' + str(src_image.shape))
     x1, y1 = pt1.get('x'), pt1.get('y')
     x2, y2 = pt2.get('x'), pt2.get('y')
@@ -100,16 +100,19 @@ def trim(src_filename, dst_filename):
     subprocess.run(morphology_cmd)
     trim_cmd = ['convert', src_filename, '-fuzz', '10%', '-trim', '+repage', dst_filename]
     subprocess.run(trim_cmd)
+    dst_image = cv2.imread(dst_filename, cv2.IMREAD_GRAYSCALE)
+    retval, th_image = cv2.threshold(dst_image, 64, 255, cv2.THRESH_BINARY)
+    cv2.imwrite(dst_filename, th_image)
 
 
 def resize(src_filename, dst_filename, width=image_width, height=image_height):
-    src_image = cv2.imread(src_filename)
+    src_image = cv2.imread(src_filename, cv2.IMREAD_GRAYSCALE)
     dst_image = cv2.resize(src_image, (width, height), interpolation=cv2.INTER_CUBIC)
     cv2.imwrite(dst_filename, dst_image)
 
 
 def draw_rectangle(src_filename, dst_filename, pt1, pt2, color=green_color, thickness=line_thickness):
-    src_image = cv2.imread(src_filename)
+    src_image = cv2.imread(src_filename, cv2.IMREAD_GRAYSCALE)
     x1, y1 = pt1.get('x'), pt1.get('y')
     x2, y2 = pt2.get('x'), pt2.get('y')
     dst_image = cv2.rectangle(src_image, (x1, y1), (x2, y2), color, thickness)

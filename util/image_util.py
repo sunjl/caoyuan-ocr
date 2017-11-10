@@ -50,17 +50,14 @@ def gen_font_image():
 
     for char in chars:
         font_width, font_height = font.getsize(char)
-
-        width_offset += random.randint(min_char_width, max_char_width)
-
         height_offset_limit = (image_height - font_height) // 2
         if height_offset_limit > 0:
             height_offset = random.randint(1, height_offset_limit)
         else:
             height_offset = 0
-
         offset = (width_offset, height_offset)
         draw.text(offset, char, font=font, fill=white_color)
+        width_offset += random.randint(min_char_width, max_char_width)
 
     return chars, np.array(image)
 
@@ -75,11 +72,10 @@ def gen_custom_image():
         fullname = result.get('fullname')
         char_image = cv2.imread(fullname, cv2.IMREAD_GRAYSCALE)
         rows, cols = char_image.shape
-        width_offset += cols
-        # logger.debug('--char--' + char)
-        if (rows < image_height) and (width_offset + cols < image_width):
+        if rows < image_height and (width_offset + cols) < image_width:
             chars.append(char)
             image[0:rows, width_offset:width_offset + cols, 0] = char_image
+            width_offset += cols
     return chars, np.array(image)
 
 

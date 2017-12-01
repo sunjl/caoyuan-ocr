@@ -10,7 +10,6 @@ import cv2
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from keras.callbacks import EarlyStopping
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Dense, Activation, Flatten
 from keras.layers import Input
@@ -28,7 +27,6 @@ from config.recognition_config import input_shape
 from config.recognition_config import output_dir
 from config.recognition_config import model_plot_name
 from config.recognition_config import num_epoch
-from config.recognition_config import patience
 from config.recognition_config import model_h5_name
 from config.recognition_config import test_data_size
 from config.recognition_config import test_data_dir

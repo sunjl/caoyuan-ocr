@@ -8,6 +8,8 @@ curl -v 'http://localhost:5000/template/create' \
   --header "Content-Type: application/json" \
   --data-binary @train_template.json
 
+convert train_image.jpeg -resize 794x1123! png24:train_image.png
+
 curl -v -X POST 'http://localhost:5000/storage/upload' \
   -F "file=@../data/image/train/train_image_01.png"
 

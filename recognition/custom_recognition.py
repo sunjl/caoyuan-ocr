@@ -23,7 +23,7 @@ from config.image_config import dict_classes
 from config.image_config import dict_chars
 
 from config.recognition_config import batch_size
-from config.recognition_config import input_shape
+from config.recognition_config import grayscale_input_shape
 from config.recognition_config import output_dir
 from config.recognition_config import model_plot_name
 from config.recognition_config import num_epoch
@@ -81,7 +81,7 @@ def custom_cross_entropy(y_true, y_pred):
 
 
 def get_model():
-    input_data = Input(shape=input_shape)
+    input_data = Input(shape=grayscale_input_shape)
 
     conv1 = Conv2D(32, (3, 3), padding='same')(input_data)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)

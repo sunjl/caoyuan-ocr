@@ -11,7 +11,7 @@ letters = string.ascii_letters
 dict_chars = digits + letters
 dict_classes = int(len(dict_chars))
 
-max_num_of_chars = 2
+max_num_of_chars = 4
 min_num_of_chars = 1
 
 image_width = 192

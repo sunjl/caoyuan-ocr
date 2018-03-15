@@ -5,6 +5,6 @@ mongo:
   username:
   password:
 
-upload_dir : '/tmp/caoyuan_ocr/upload'
-image_dir : '/tmp/caoyuan_ocr/image'
-template_dir : '/tmp/caoyuan_ocr/template'
+upload_dir : '/data2/application/caoyuan_ocr/upload'
+image_dir : '/data2/application/caoyuan_ocr/image'
+template_dir : '/data2/application/caoyuan_ocr/template'
